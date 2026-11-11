@@ -1,0 +1,52 @@
+.plan-motion-card {
+  isolation: isolate;
+  transform-origin: center;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out;
+}
+.plan-motion-card:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    180px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(8, 127, 140, 0.065),
+    transparent 75%
+  );
+  opacity: 0;
+  transition: opacity 0.18s ease-out;
+}
+.plan-motion-card > img {
+  transform: perspective(800px)
+    translate3d(var(--product-x, 0px), var(--product-y, 0px), 0)
+    rotateX(var(--product-rx, 0deg)) rotateY(var(--product-ry, 0deg));
+}
+.plan-motion-card:focus-within {
+  border-color: var(--accent-primary);
+}
+@media (hover: hover) and (pointer: fine) {
+  .plan-motion-card:hover {
+    border-color: var(--accent-primary);
+    box-shadow:
+      0 2px 4px #102a2d08,
+      0 12px 28px -12px #087f8c24;
+  }
+  .plan-motion-card.social:hover {
+    border-color: var(--social-green);
+  }
+  .plan-motion-card:hover:before {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plan-motion-card > img {
+    transform: none;
+  }
+  .plan-motion-card:before {
+    transition: none;
+  }
+}

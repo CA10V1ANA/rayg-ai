@@ -1,0 +1,82 @@
+.copy-details {
+  border-bottom: 1px solid var(--border);
+  margin-top: 16px;
+}
+.copy-details > summary {
+  min-height: 44px;
+  padding-block: 8px;
+  gap: 12px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+.copy-details > summary:after {
+  content: "+";
+  font-size: 1rem;
+  color: var(--accent-primary);
+  margin-left: auto;
+}
+.copy-details[open] > summary:after {
+  content: "−";
+}
+.copy-details > p {
+  padding: 8px 0 16px;
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  max-width: 60ch;
+}
+.price-card .card-details {
+  margin-top: auto;
+  grid-column: 1/-1;
+}
+.price-card > p {
+  min-height: 0;
+}
+.kit-display .kit-more {
+  margin: 0;
+}
+.kit-display .kit-panel {
+  gap: 20px;
+}
+.kit-display .kit-more > p {
+  font-size: 0.8125rem;
+}
+.calculator .copy-details {
+  margin-top: 8px;
+}
+.calculator .copy-details > summary {
+  font-size: 0.6875rem;
+}
+.principles {
+  justify-content: center;
+}
+.principles > div {
+  justify-content: center;
+}
+.sim-controls > h3 {
+  margin-bottom: 24px;
+}
+.final-cta > h2 {
+  font-size: 2.5rem;
+}
+.brand-player .film-caption {
+  min-height: 88px;
+}
+@media (max-width: 600px) {
+  .copy-details > summary {
+    font-size: 0.75rem;
+  }
+  .copy-details > p {
+    font-size: 0.8125rem;
+  }
+  .final-cta > h2 {
+    font-size: 2rem;
+  }
+  .brand-player .film-caption {
+    min-height: 120px;
+  }
+  .kit-display .kit-panel {
+    gap: 16px;
+  }
+}
