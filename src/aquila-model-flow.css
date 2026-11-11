@@ -1,0 +1,248 @@
+.model-dialog {
+  width: min(1000px, calc(100% - 48px));
+  padding: 48px;
+}
+.aquila-flow {
+  --border: #e6a8a840;
+  --bg-secondary: #292225;
+  --text-secondary: #b6ada8;
+  --accent-primary: #e6a8a8;
+}
+.aquila-flow > .eyebrow {
+  margin-top: 0;
+}
+.aquila-flow #model-note {
+  font-size: 14px;
+  max-width: 68ch;
+}
+.flow-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 32px 0;
+}
+.flow-steps li {
+  border-top: 1px solid #ffffff25;
+  padding-top: 12px;
+  font-size: 14px;
+  color: #b6ada8;
+}
+.flow-steps li[aria-current] {
+  color: #e6a8a8;
+  border-color: #e6a8a8;
+}
+.flow-steps li > span {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.flow-stage {
+  animation: flow-enter 250ms var(--ease-smooth-out) both;
+}
+.flow-stage h3 {
+  margin-bottom: 24px;
+}
+.flow-stage h3:focus {
+  outline: 2px solid #e6a8a8;
+  outline-offset: 6px;
+}
+.flow-product {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+.flow-product img {
+  width: 100%;
+  height: auto;
+}
+.flow-specs {
+  margin: 24px 0;
+}
+.flow-specs > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid #ffffff25;
+}
+.flow-specs dt {
+  color: #b6ada8;
+}
+.flow-specs dd {
+  margin: 0;
+  text-align: right;
+  max-width: 50%;
+}
+.aquila-flow .flow-note {
+  font-size: 13px;
+  color: #b6ada8;
+}
+.flow-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #ffffff25;
+}
+.flow-form {
+  display: grid;
+  gap: 24px;
+  max-width: 560px;
+}
+.flow-form > p {
+  margin: 0;
+}
+.flow-form label {
+  display: grid;
+  gap: 8px;
+}
+.flow-form input {
+  min-height: 48px;
+  width: 100%;
+  border: 1px solid #e6a8a870;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: #141415;
+  color: #f1ebe5;
+}
+.flow-payments {
+  border: 0;
+  padding: 0;
+  margin-top: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.flow-payments legend {
+  margin-bottom: 16px;
+}
+.flow-payments label {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #e6a8a860;
+  border-radius: 12px;
+  padding: 12px 24px;
+  min-height: 48px;
+  cursor: pointer;
+}
+.flow-payments label:has(:checked) {
+  background: #e6a8a81a;
+  border-color: #e6a8a8;
+}
+.flow-payments input {
+  accent-color: #e6a8a8;
+}
+.aquila-flow .case-viewer {
+  border-radius: 12px;
+}
+.aquila-flow .case-viewer-top {
+  position: static;
+  padding: 16px 24px 0;
+  font-size: 14px;
+}
+.aquila-flow .case-viewer-top small {
+  display: block;
+  font-size: 13px;
+}
+.aquila-flow .case-viewer-top span:last-child {
+  font-size: 13px;
+}
+.aquila-flow .case-canvas {
+  height: 350px;
+}
+.aquila-flow .case-hint,
+.aquila-flow .case-range > div {
+  font-size: 13px;
+}
+.aquila-flow .case-fallback img {
+  width: 120px;
+  height: 120px;
+}
+.aquila-flow .case-controls {
+  padding-inline: 24px;
+}
+.model-row[data-active="true"] {
+  background: #804b580a;
+}
+.model-row[data-active="true"] .model-index {
+  color: #643c46;
+}
+.collection-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+.collection-preview p {
+  margin: 0;
+  font:
+    28px Georgia,
+    serif;
+}
+.collection-preview .button {
+  border-color: #8d6d76;
+  font-size: 13px;
+  padding-inline: 16px;
+}
+@keyframes flow-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 760px) {
+  .model-dialog {
+    padding: 48px 24px 24px;
+  }
+  .flow-product {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .flow-product img {
+    max-height: 200px;
+    object-fit: contain;
+  }
+  .flow-steps {
+    gap: 8px;
+    margin-top: 24px;
+  }
+  .flow-steps li {
+    font-size: 13px;
+  }
+  .flow-specs > div {
+    gap: 16px;
+  }
+  .aquila-flow .case-controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .aquila-flow .case-range {
+    width: 100%;
+  }
+  .aquila-flow .case-canvas {
+    height: 270px;
+  }
+  .flow-actions .button {
+    width: 100%;
+  }
+  .collection-preview {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-stage {
+    animation: none;
+  }
+}
