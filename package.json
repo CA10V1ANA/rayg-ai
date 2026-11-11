@@ -1,0 +1,28 @@
+{
+  "name": "rayg-ai-showcase",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "test": "node tests/interaction.mjs",
+    "test:navbar": "node tests/navbar.mjs",
+    "test:boxes": "node tests/boxes.mjs",
+    "audit": "node scripts/visual_audit.mjs http://localhost:5173 audit-output",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "motion": "^14.12.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "playwright": "^1.65.0",
+    "prettier": "^3.9.10",
+    "vite": "^8.3.7"
+  }
+}

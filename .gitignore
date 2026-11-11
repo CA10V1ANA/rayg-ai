@@ -1,0 +1,14 @@
+node_modules/
+audit-output/
+test-results/
+dist/
+.DS_Store
+Thumbs.db
+*.local
+.env
+.env.*
+
+# Regras e documentação interna privada
+Regra da Rayg Ai/
+Regras da Rayg Ai/
+docs/
