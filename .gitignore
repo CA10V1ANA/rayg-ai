@@ -1,6 +1,7 @@
 node_modules/
 audit-output/
 test-results/
+.taste-skill/
 dist/
 .DS_Store
 Thumbs.db
