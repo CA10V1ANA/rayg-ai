@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useInView } from "motion/react";
 import "./case-viewer.css";
 
-export default function CaseViewer({ variant, name }) {
+export default function CaseViewer({ variant, name, brand = "RAYG" }) {
   const host = useRef(null),
     controller = useRef(null);
   const near = useInView(host, { once: true, margin: "300px 0px" });
@@ -31,8 +31,11 @@ export default function CaseViewer({ variant, name }) {
       .then(({ createCaseStudio }) => {
         if (canceled) return;
         try {
-          studio = createCaseStudio(host.current, variant, () =>
-            setUnavailable(true),
+          studio = createCaseStudio(
+            host.current,
+            variant,
+            () => setUnavailable(true),
+            brand,
           );
           controller.current = studio;
           setReady(true);
@@ -59,7 +62,7 @@ export default function CaseViewer({ variant, name }) {
     <div className="case-viewer">
       <div className="case-viewer-top">
         <span>
-          RAYG {name}
+          {brand} {name}
           <small>{mechanisms[variant]}</small>
         </span>
         <span>CONCEITO 3D</span>
@@ -69,7 +72,7 @@ export default function CaseViewer({ variant, name }) {
         className="case-canvas"
         id="case-canvas"
         role="img"
-        aria-label={`Caixa conceitual do RAYG ${name}, ${opening === 0 ? "fechada" : opening === 100 ? "aberta" : `com abertura de ${opening}%`}`}
+        aria-label={`Caixa conceitual do ${brand} ${name}, ${opening === 0 ? "fechada" : opening === 100 ? "aberta" : `com abertura de ${opening}%`}`}
       >
         {!ready && !unavailable && (
           <span className="case-loading" role="status">
@@ -79,10 +82,14 @@ export default function CaseViewer({ variant, name }) {
         {unavailable && (
           <div className="case-fallback">
             <img
-              src="/assets/rayg-kits-concept.png"
-              alt="Propostas dos três kits RAYG AI"
+              src={
+                brand === "AQUILA"
+                  ? "/assets/aquila/brandmark.svg"
+                  : "/assets/rayg-kits-concept.png"
+              }
+              alt={`Apresentação conceitual ${brand}`}
             />
-            <p>Veja os kits na imagem de referência abaixo.</p>
+            <p>A visualização 3D não está disponível neste aparelho.</p>
           </div>
         )}
       </div>

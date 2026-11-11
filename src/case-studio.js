@@ -43,10 +43,25 @@ function rounded(w, d, r = 0.2) {
 }
 
 /** Each variant has its own lid construction and reversible choreography. */
-function createKit(variant) {
-  const config = FINISH[variant] ?? FINISH.pro;
+function createKit(variant, brand = "RAYG") {
+  const aquila = brand === "AQUILA";
+  const config = {
+    ...(FINISH[variant] ?? FINISH.pro),
+    ...(aquila
+      ? {
+          shell:
+            variant === "essencial"
+              ? 0xe9ded6
+              : variant === "pro"
+                ? 0x292225
+                : 0x9d7178,
+          lining: 0x3b3035,
+          ink: variant === "essencial" ? "#292225" : "#f1ebe5",
+        }
+      : {}),
+  };
   const group = new THREE.Group();
-  group.name = `RAYG ${variant} presentation kit`;
+  group.name = `${brand} ${variant} presentation kit`;
   const geometries = new Set(),
     materials = new Set(),
     textures = new Set();
@@ -65,7 +80,11 @@ function createKit(variant) {
     clearcoat: variant === "ultra" ? 0.4 : 0.12,
   });
   const lining = material({ color: config.lining, roughness: 0.98 });
-  const teal = material({ color: 0x087f8c, metalness: 0.18, roughness: 0.4 });
+  const teal = material({
+    color: aquila ? 0xe6a8a8 : 0x087f8c,
+    metalness: 0.18,
+    roughness: 0.4,
+  });
   const black = material({ color: 0x161d20, roughness: 0.65 });
   const cloth = material({
     color: variant === "essencial" ? 0xc1cecc : 0x8b999b,
@@ -103,20 +122,33 @@ function createKit(variant) {
     canvas.height = 180;
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = ink;
-    ctx.font = 'italic 700 104px "Space Grotesk", Arial';
-    ctx.fillText("RAYG", 12, 125);
-    ctx.fillStyle = "#087f8c";
-    ctx.beginPath();
-    ctx.moveTo(397, 38);
-    ctx.lineTo(571, 38);
-    ctx.lineTo(549, 138);
-    ctx.lineTo(375, 138);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "italic 700 82px Inter, Arial";
-    ctx.fillText("AI", 408, 117);
+    if (aquila) {
+      ctx.font = "88px Georgia, serif";
+      ctx.fillText("QUILA", 148, 122);
+    } else {
+      ctx.font = 'italic 700 104px "Space Grotesk", Arial';
+      ctx.fillText("RAYG", 12, 125);
+      ctx.fillStyle = "#087f8c";
+      ctx.beginPath();
+      ctx.moveTo(397, 38);
+      ctx.lineTo(571, 38);
+      ctx.lineTo(549, 138);
+      ctx.lineTo(375, 138);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "italic 700 82px Inter, Arial";
+      ctx.fillText("AI", 408, 117);
+    }
     const texture = new THREE.CanvasTexture(canvas);
+    if (aquila) {
+      const symbol = new Image();
+      symbol.onload = () => {
+        ctx.drawImage(symbol, 12, 24, 130, 130);
+        texture.needsUpdate = true;
+      };
+      symbol.src = "/assets/aquila/brandmark.svg";
+    }
     texture.colorSpace = THREE.SRGBColorSpace;
     textures.add(texture);
     const mat = material({
@@ -281,7 +313,7 @@ function createKit(variant) {
   };
 }
 
-export function createCaseStudio(host, variant, onLost) {
+export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
@@ -341,7 +373,7 @@ export function createCaseStudio(host, variant, onLost) {
   ground.position.y = -0.76;
   ground.receiveShadow = true;
   scene.add(ground);
-  let kit = createKit(variant);
+  let kit = createKit(variant, brand);
   scene.add(kit.group);
   // Fit all lid/drawer poses once, so opening never clips or changes framing.
   function framing() {
@@ -463,7 +495,7 @@ export function createCaseStudio(host, variant, onLost) {
       if (!FINISH[value] || host.dataset.variant === value) return;
       scene.remove(kit.group);
       kit.dispose();
-      kit = createKit(value);
+      kit = createKit(value, brand);
       scene.add(kit.group);
       current = target = THREE.MathUtils.clamp(opening, 0, 1);
       frameBounds = framing();
