@@ -1,4 +1,16 @@
-# RAYG AI — Óculos com Grau Adaptativo
+# AQUILA — Uma nova perspectiva
+
+A apresentação atual está em `src/Aquila.jsx`, com estilos em `src/aquila.css`. Preserva a identidade, o símbolo, as cores e os textos do protótipo AQUILA enviado. A imagem e os nomes da coleção continuam conceituais; preços e especificações comerciais não foram adicionados.
+
+Use Node.js 22.12+ (ou 24+) e execute `npm install`, seguido de `npm run dev`. Para produção, use `npm run build` e `npm run preview`.
+
+O relatório de decisões, referências e verificações está em [AQUILA-DESIGN.md](./AQUILA-DESIGN.md). Para testar a página atual, mantenha o servidor local ativo e execute `npm run test:aquila`. O teste utiliza o Microsoft Edge instalado e, por padrão, acessa `http://127.0.0.1:5173`. A variável `AQUILA_URL` permite apontar para outro servidor, incluindo a versão compilada.
+
+Os arquivos RAYG AI e seus testes anteriores foram preservados para consulta. A documentação abaixo descreve essa versão histórica, não as funcionalidades da apresentação AQUILA.
+
+O modal de cada conceito segue Modelo → Caixa e conteúdo → Dados → Pagamento. As caixas 3D são propostas adaptadas à identidade AQUILA. O checkout é somente demonstrativo, sem transmissão de dados, geração de pedidos ou cobrança. Preços, especificações e conteúdo oficial dos kits continuam pendentes. Execute `npm run test:aquila-flow` para verificar as quatro etapas, os três mecanismos das caixas e a alternância automática dos conceitos. Esse teste usa `http://127.0.0.1:5175` por padrão, configurável por `AQUILA_URL`.
+
+## Documentação histórica — RAYG AI
 
 Landing page moderna, acessível e interativa para apresentação e demonstração da tecnologia de óculos com ajuste de foco e grau adaptativo via inteligência artificial.
 
