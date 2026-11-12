@@ -22,6 +22,8 @@ A troca de tema da cápsula usa 500 ms para fundo, borda, texto e símbolo. O it
 
 O hero usa um modelo conceitual procedural com acabamento AQUILA, girando 360° em cerca de 20 segundos. A rotação respeita pausa/retomada e movimento reduzido. Fora da tela ou com a aba oculta, a cena deixa de renderizar. Se WebGL falhar, a imagem conceitual permanece como alternativa.
 
+O modelo AQUILA é definido em `src/aquila-eyewear.js`, tomando a imagem original como referência para as lentes trapezoidais arredondadas, armação de acetato preto, ponte integrada, hastes largas e detalhes rosé. É uma aproximação procedural: a foto única não fornece as medidas nem todas as vistas do produto. Durante o carregamento, aparece um indicador discreto; a imagem 2D é exibida somente se a visualização falhar, evitando a troca entre dois óculos diferentes ao recarregar.
+
 As caixas permitem rotação por arraste com mouse/dedo e pelas setas do teclado. Home e o botão Restaurar vista recuperam o ângulo inicial; Vista superior mostra o conteúdo por cima. A abertura pelo deslizador ou botão é independente do ângulo escolhido. A projeção se ajusta à pose atual para evitar cortes. O Prestige tem acabamento rosé menos reflexivo e marca externa escura, com a marca interna clara.
 
 `npm run test:aquila-3d` verifica giro completo, pausa, movimento reduzido, rotação das três caixas, vista superior, teclado, toque, abertura independente, acessibilidade e alternativa após perda do contexto WebGL.

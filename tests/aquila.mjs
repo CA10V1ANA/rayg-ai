@@ -282,12 +282,12 @@ try {
       .evaluate((el) => getComputedStyle(el).animationName),
     "none",
   );
+  await page.locator(".hero-product.is-ready canvas").waitFor();
   assert.equal(
-    await page
-      .locator(".hero-art img")
-      .evaluate((el) => getComputedStyle(el).animationName),
-    "none",
+    await page.locator(".hero-product-canvas").getAttribute("data-paused"),
+    "true",
   );
+  assert.equal(await page.locator(".hero-product img").count(), 0);
   assert.equal(
     await page
       .locator(".hero-aside")

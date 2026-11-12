@@ -7,6 +7,30 @@ const url = process.env.AQUILA_URL || "http://127.0.0.1:5175";
 const reports = [];
 await fs.mkdir("audit-output/aquila", { recursive: true });
 try {
+  const loadingPage = await browser.newPage();
+  let release;
+  const gate = new Promise((resolve) => {
+    release = resolve;
+  });
+  await loadingPage.route("**/hero-eyewear-studio.js", async (route) => {
+    await gate;
+    await route.continue();
+  });
+  await loadingPage.goto(url, { waitUntil: "domcontentloaded" });
+  await loadingPage.locator(".hero-product-loading").waitFor();
+  assert.equal(
+    await loadingPage.locator(".hero-product img").count(),
+    0,
+    "No old image flashes while the 3D module loads",
+  );
+  release();
+  await loadingPage.locator(".hero-product.is-ready canvas").waitFor();
+  assert.equal(
+    await loadingPage.locator(".hero-product img").count(),
+    0,
+    "Only one product representation is displayed",
+  );
+  await loadingPage.close();
   for (const width of [1440, 390]) {
     const context = await browser.newContext({
       viewport: { width, height: 900 },
