@@ -16,4 +16,12 @@ Os tokens ficam em `src/aquila.css`; `src/motion-tokens.js` lê os mesmos valore
 
 A troca de tema da cápsula usa 500 ms para fundo, borda, texto e símbolo. O item da seção atual ganha um sublinhado animado. A assinatura combina o símbolo original com letras vetoriais de traço fino; o nome recolhe gradualmente e o símbolo aumenta 16%. O percurso começa após 48 px e se estende por 70% da altura do hero, com mínimo de 420 px. A resposta acompanha a rolagem com suavização temporal de 110 ms, nos dois sentidos. Movimento reduzido mantém a assinatura inteira e elimina as transições.
 
+## Produto e caixas 3D
+
+O hero usa um modelo conceitual procedural com acabamento AQUILA, girando 360° em cerca de 20 segundos. A rotação respeita pausa/retomada e movimento reduzido. Fora da tela ou com a aba oculta, a cena deixa de renderizar. Se WebGL falhar, a imagem conceitual permanece como alternativa.
+
+As caixas permitem rotação por arraste com mouse/dedo e pelas setas do teclado. Home e o botão Restaurar vista recuperam o ângulo inicial; Vista superior mostra o conteúdo por cima. A abertura pelo deslizador ou botão é independente do ângulo escolhido. A projeção se ajusta à pose atual para evitar cortes. A classe C tem acabamento rosé menos reflexivo e marca externa escura, com a marca interna clara.
+
+`npm run test:aquila-3d` verifica giro completo, pausa, movimento reduzido, rotação das três caixas, vista superior, teclado, toque, abertura independente, acessibilidade e alternativa após perda do contexto WebGL.
+
 Verificação: `npm run build`, `npm run test:aquila-motion` e `npm run test:aquila-flow`, com servidor em `127.0.0.1:5175` ou variável `AQUILA_URL`.

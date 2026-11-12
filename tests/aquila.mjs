@@ -48,58 +48,31 @@ try {
         `${width}: complete navigation capsule is centered`,
       );
     }
-    const product = page.locator(".hero-art img");
-    assert.equal(
-      await product.evaluate((el) => getComputedStyle(el).animationName),
-      "eyewear-entrance, eyewear-orbit",
-    );
-    assert.equal(
-      await product.evaluate(
-        (el) => getComputedStyle(el).animationIterationCount,
-      ),
-      "1, infinite",
-    );
-    await product.evaluate(async (el) => {
-      await Promise.all(
-        el
-          .getAnimations()
-          .filter(
-            (animation) => animation.effect.getTiming().iterations !== Infinity,
-          )
-          .map((animation) => animation.finished),
-      );
-    });
+    const product = page.locator(".hero-product-canvas");
+    await page.locator(".hero-product.is-ready canvas").waitFor();
     await page.keyboard.press("Tab");
     assert.equal(
       await page.evaluate(() => document.activeElement.className),
       "skip-link",
     );
     await page.evaluate(() => document.activeElement.blur());
-    const beforeMotion = await product.evaluate(
-      (el) => getComputedStyle(el).transform,
-    );
+    const beforeMotion = await product.getAttribute("data-angle");
     await page.waitForTimeout(150);
-    assert.notEqual(
-      await product.evaluate((el) => getComputedStyle(el).transform),
-      beforeMotion,
-    );
+    assert.notEqual(await product.getAttribute("data-angle"), beforeMotion);
     await page.getByRole("button", { name: "Pausar movimento" }).click();
-    assert.equal(
-      await product.evaluate((el) => getComputedStyle(el).animationPlayState),
-      "paused",
+    await page.waitForFunction(
+      () =>
+        document.querySelector(".hero-product-canvas").dataset.paused ===
+        "true",
     );
-    const pausedTransform = await product.evaluate(
-      (el) => getComputedStyle(el).transform,
-    );
+    const pausedAngle = await product.getAttribute("data-angle");
     await page.waitForTimeout(150);
-    assert.equal(
-      await product.evaluate((el) => getComputedStyle(el).transform),
-      pausedTransform,
-    );
+    assert.equal(await product.getAttribute("data-angle"), pausedAngle);
     await page.getByRole("button", { name: "Retomar movimento" }).click();
-    assert.equal(
-      await product.evaluate((el) => getComputedStyle(el).animationPlayState),
-      "running, running",
+    await page.waitForFunction(
+      () =>
+        document.querySelector(".hero-product-canvas").dataset.paused ===
+        "false",
     );
     const brand = page.getByRole("link", {
       name: "AQUILA início",
