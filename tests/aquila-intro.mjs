@@ -14,6 +14,49 @@ try {
     await page.goto(url, { waitUntil: "domcontentloaded" });
     const intro = page.getByRole("dialog", { name: "Abertura AQUILA" });
     await intro.waitFor();
+    await page.evaluate(() => {
+      const node = document.querySelector(".site-intro");
+      window.introReview = { phases: [node.dataset.phase] };
+      const observer = new MutationObserver(() => {
+        const phase = node.dataset.phase;
+        if (!window.introReview.phases.includes(phase))
+          window.introReview.phases.push(phase);
+        if (phase === "flight") {
+          window.introReview.wings = getComputedStyle(
+            node.querySelector(".aquila-wing-left"),
+          ).animationName;
+          window.introReview.navHidden = getComputedStyle(
+            document.querySelector(".scroll-brand"),
+          ).opacity;
+        }
+        if (phase === "landed") {
+          const a = node
+            .querySelector(".intro-logo .brandmark")
+            .getBoundingClientRect();
+          const b = document
+            .querySelector(".scroll-brand .brandmark")
+            .getBoundingClientRect();
+          const c = node
+            .querySelector(".intro-logo .wordmark")
+            .getBoundingClientRect();
+          const d = document
+            .querySelector(".scroll-brand .wordmark")
+            .getBoundingClientRect();
+          window.introReview.landing = [
+            a.x - b.x,
+            a.y - b.y,
+            a.width - b.width,
+            c.x - d.x,
+            c.y - d.y,
+          ];
+          observer.disconnect();
+        }
+      });
+      observer.observe(node, {
+        attributes: true,
+        attributeFilter: ["data-phase"],
+      });
+    });
     assert.equal(
       await page.locator(".site-content").evaluate((el) => el.inert),
       true,
@@ -39,6 +82,25 @@ try {
       [],
     );
     await intro.waitFor({ state: "hidden", timeout: 6000 });
+    const choreography = await page.evaluate(() => window.introReview);
+    assert.deepEqual(choreography.phases, [
+      "drawing",
+      "letters",
+      "gather",
+      "flight",
+      "landing",
+      "landed",
+    ]);
+    assert.equal(choreography.wings, "aquila-wing-left");
+    assert.equal(
+      choreography.navHidden,
+      "0",
+      "Only the flying logo is visible until handoff",
+    );
+    assert.ok(
+      choreography.landing.every((delta) => Math.abs(delta) <= 1),
+      JSON.stringify(choreography.landing),
+    );
     assert.equal(
       await page.locator(".site-content").evaluate((el) => el.inert),
       false,
@@ -69,7 +131,7 @@ try {
       false,
     );
     console.log(
-      `${width}: abertura automática, reinício ao recarregar, pular, foco e acessibilidade aprovados`,
+      `${width}: desenho, letras, asas, voo, pouso preciso, teclado e acessibilidade aprovados`,
     );
     await context.close();
   }
