@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { createEyewear } from "./eyewear.js";
-import { casePose, caseViewProgress } from "./case-kinematics.js";
+import { casePose } from "./case-kinematics.js";
 
 const SIZE = { width: 7, depth: 4.6, wall: 0.16, height: 1.25, lid: 0.24 };
 const FINISH = {
@@ -54,9 +55,10 @@ function createKit(variant, brand = "RAYG") {
               ? 0xe9ded6
               : variant === "pro"
                 ? 0x292225
-                : 0x9d7178,
+                : 0x714650,
           lining: 0x3b3035,
           ink: variant === "essencial" ? "#292225" : "#f1ebe5",
+          ...(variant === "ultra" ? { metalness: 0.18, roughness: 0.56 } : {}),
         }
       : {}),
   };
@@ -77,7 +79,8 @@ function createKit(variant, brand = "RAYG") {
     color: config.shell,
     metalness: config.metalness,
     roughness: config.roughness,
-    clearcoat: variant === "ultra" ? 0.4 : 0.12,
+    clearcoat: variant === "ultra" && !aquila ? 0.4 : 0.12,
+    envMapIntensity: aquila && variant === "ultra" ? 0.3 : 0.5,
   });
   const lining = material({ color: config.lining, roughness: 0.98 });
   const teal = material({
@@ -123,6 +126,21 @@ function createKit(variant, brand = "RAYG") {
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = ink;
     if (aquila) {
+      ctx.save();
+      ctx.translate(12, 24);
+      ctx.scale(130 / 60, 130 / 60);
+      ctx.strokeStyle = ink;
+      ctx.lineWidth = 1.8;
+      ctx.lineCap = "round";
+      ctx.stroke(
+        new Path2D(
+          "M4 52Q24 40 29 5Q34 36 56 52M14 44Q30 22 46 44M22 49Q30 36 38 49M29 5L33 12",
+        ),
+      );
+      ctx.beginPath();
+      ctx.arc(29, 21, 1.7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
       ctx.font = "88px Georgia, serif";
       ctx.fillText("QUILA", 148, 122);
     } else {
@@ -141,20 +159,15 @@ function createKit(variant, brand = "RAYG") {
       ctx.fillText("AI", 408, 117);
     }
     const texture = new THREE.CanvasTexture(canvas);
-    if (aquila) {
-      const symbol = new Image();
-      symbol.onload = () => {
-        ctx.drawImage(symbol, 12, 24, 130, 130);
-        texture.needsUpdate = true;
-      };
-      symbol.src = "/assets/aquila/brandmark.svg";
-    }
     texture.colorSpace = THREE.SRGBColorSpace;
     textures.add(texture);
     const mat = material({
       map: texture,
       transparent: true,
-      roughness: 0.6,
+      roughness: 0.9,
+      metalness: 0,
+      envMapIntensity: 0.1,
+      toneMapped: false,
       side: THREE.DoubleSide,
       depthWrite: false,
     });
@@ -187,7 +200,7 @@ function createKit(variant, brand = "RAYG") {
   box(6.4, 0.08, 0.06, 0, 0.28, -2.05, teal);
   box(6.4, 0.08, 0.06, 0, 0.28, 2.05, teal);
   box(6.35, 0.12, 0.12, 0, 0.28, 0.36, lining);
-  const glasses = createEyewear();
+  const glasses = createEyewear({ brand });
   glasses.group.name = "Folded eyewear in tray";
   glasses.group.scale.setScalar(0.83);
   glasses.group.rotation.x = -Math.PI / 2;
@@ -275,7 +288,11 @@ function createKit(variant, brand = "RAYG") {
   const innerLogo = logo(config.ink, 2.5, hinge);
   innerLogo.rotation.x = Math.PI / 2;
   innerLogo.position.set(0, -0.028, half + 0.16);
-  const outerLogo = logo(config.ink, 2.5, hinge);
+  const outerLogo = logo(
+    aquila && variant === "ultra" ? "#28131c" : config.ink,
+    3.1,
+    hinge,
+  );
   outerLogo.rotation.x = -Math.PI / 2;
   outerLogo.position.set(0, 0.34, half);
   if (variant === "essencial") {
@@ -331,19 +348,16 @@ export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
   const camera = new THREE.OrthographicCamera(-6, 6, 4, -4, 0.1, 60);
   camera.position.set(7.8, 7.8, 11.7);
   camera.lookAt(0, 1, 0);
-  const cameraRadius = Math.hypot(7.8, 11.7);
-  const initialYaw = Math.atan2(7.8, 11.7);
-  function orientCamera(amount) {
-    const progress = caseViewProgress(amount),
-      yaw = initialYaw * (1 - progress);
-    camera.position.set(
-      cameraRadius * Math.sin(yaw),
-      7.8 - progress * 1.3,
-      cameraRadius * Math.cos(yaw),
-    );
-    camera.lookAt(0, 1, 0);
-    camera.updateMatrixWorld();
-  }
+  const controls = new OrbitControls(camera, canvas);
+  controls.target.set(0, 1, 0);
+  controls.enablePan = false;
+  controls.enableZoom = false;
+  controls.enableDamping = false;
+  controls.rotateSpeed = 0.7;
+  controls.minPolarAngle = 0.08;
+  controls.maxPolarAngle = Math.PI * 0.48;
+  controls.update();
+  controls.saveState();
   const room = new RoomEnvironment(),
     pmrem = new THREE.PMREMGenerator(renderer),
     env = pmrem.fromScene(room, 0.04);
@@ -375,36 +389,6 @@ export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
   scene.add(ground);
   let kit = createKit(variant, brand);
   scene.add(kit.group);
-  // Fit all lid/drawer poses once, so opening never clips or changes framing.
-  function framing() {
-    const bounds = new THREE.Box3();
-    const point = new THREE.Vector3();
-    for (let sample = 0; sample <= 20; sample++) {
-      const amount = sample / 20;
-      orientCamera(amount);
-      kit.pose(amount);
-      kit.group.updateWorldMatrix(true, true);
-      kit.group.traverse((obj) => {
-        if (!obj.isMesh) return;
-        for (let parent = obj; parent; parent = parent.parent)
-          if (!parent.visible) return;
-        if (!obj.geometry.boundingBox) obj.geometry.computeBoundingBox();
-        const box = obj.geometry.boundingBox;
-        for (const x of [box.min.x, box.max.x])
-          for (const y of [box.min.y, box.max.y])
-            for (const z of [box.min.z, box.max.z])
-              bounds.expandByPoint(
-                point
-                  .set(x, y, z)
-                  .applyMatrix4(obj.matrixWorld)
-                  .applyMatrix4(camera.matrixWorldInverse),
-              );
-      });
-    }
-    orientCamera(0);
-    return bounds;
-  }
-  let frameBounds = framing();
   kit.pose(0);
   let target = 0,
     current = 0,
@@ -423,7 +407,7 @@ export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
       : THREE.MathUtils.lerp(current, target, 1 - Math.exp(-dt * 9));
     if (Math.abs(current - target) < 0.001) current = target;
     const pose = kit.pose(current);
-    orientCamera(current);
+    fitCamera();
     host.dataset.opening = current.toFixed(3);
     host.dataset.mechanism = pose.mechanism;
     host.dataset.lidAngle = pose.lidAngle.toFixed(1);
@@ -433,6 +417,13 @@ export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
     host.dataset.cameraYaw = THREE.MathUtils.radToDeg(
       Math.atan2(camera.position.x, camera.position.z),
     ).toFixed(1);
+    host.dataset.cameraPolar = THREE.MathUtils.radToDeg(
+      controls.getPolarAngle(),
+    ).toFixed(1);
+    host.dataset.finish =
+      brand === "AQUILA" && host.dataset.variant === "ultra"
+        ? "rose-mat"
+        : "standard";
     renderer.render(scene, camera);
   }
   function loop(now) {
@@ -448,26 +439,87 @@ export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
     }
     frame = requestAnimationFrame(loop);
   }
+  let lastWidth = 0,
+    lastHeight = 0;
+  function fitCamera() {
+    const w = host.clientWidth,
+      h = host.clientHeight;
+    const frameBounds = new THREE.Box3().setFromObject(kit.group);
+    if (!w || !h) return;
+    camera.updateMatrixWorld();
+    const projected = new THREE.Box3();
+    for (const x of [frameBounds.min.x, frameBounds.max.x])
+      for (const y of [frameBounds.min.y, frameBounds.max.y])
+        for (const z of [frameBounds.min.z, frameBounds.max.z])
+          projected.expandByPoint(
+            new THREE.Vector3(x, y, z).applyMatrix4(camera.matrixWorldInverse),
+          );
+    const aspect = w / h;
+    const height = Math.max(
+      projected.max.y - projected.min.y + 0.7,
+      (projected.max.x - projected.min.x + 0.7) / aspect,
+    );
+    const center = projected.getCenter(new THREE.Vector3());
+    camera.left = center.x - (height * aspect) / 2;
+    camera.right = center.x + (height * aspect) / 2;
+    camera.top = center.y + height / 2;
+    camera.bottom = center.y - height / 2;
+    camera.updateProjectionMatrix();
+  }
   function resize() {
     const w = host.clientWidth,
       h = host.clientHeight;
     if (!w || !h) return;
-    const aspect = w / h;
-    const height = Math.max(
-      frameBounds.max.y - frameBounds.min.y + 0.9,
-      (Math.max(Math.abs(frameBounds.max.x), Math.abs(frameBounds.min.x)) * 2 +
-        0.9) /
-        aspect,
-    );
-    const center = frameBounds.getCenter(new THREE.Vector3());
-    camera.left = -(height * aspect) / 2;
-    camera.right = (height * aspect) / 2;
-    camera.top = center.y + height / 2;
-    camera.bottom = center.y - height / 2;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
+    if (w !== lastWidth || h !== lastHeight) {
+      renderer.setSize(w, h);
+      lastWidth = w;
+      lastHeight = h;
+    }
     render(performance.now());
   }
+  const viewChanged = () => {
+    wakeUntil = performance.now() + 400;
+    resize();
+  };
+  controls.addEventListener("change", viewChanged);
+  const offset = new THREE.Vector3();
+  function setView(polar, azimuth = controls.getAzimuthalAngle()) {
+    offset.copy(camera.position).sub(controls.target);
+    const spherical = new THREE.Spherical().setFromVector3(offset);
+    spherical.phi = THREE.MathUtils.clamp(
+      polar,
+      controls.minPolarAngle,
+      controls.maxPolarAngle,
+    );
+    spherical.theta = azimuth;
+    camera.position
+      .copy(controls.target)
+      .add(offset.setFromSpherical(spherical));
+    controls.update();
+  }
+  const keyboard = (event) => {
+    const amount = 0.18;
+    const keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home"];
+    if (!keys.includes(event.key)) return;
+    event.preventDefault();
+    if (event.key === "Home") controls.reset();
+    else
+      setView(
+        controls.getPolarAngle() +
+          (event.key === "ArrowUp"
+            ? -amount
+            : event.key === "ArrowDown"
+              ? amount
+              : 0),
+        controls.getAzimuthalAngle() +
+          (event.key === "ArrowLeft"
+            ? -amount
+            : event.key === "ArrowRight"
+              ? amount
+              : 0),
+      );
+  };
+  host.addEventListener("keydown", keyboard);
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(host);
   const intersection = new IntersectionObserver(([entry]) => {
@@ -477,6 +529,7 @@ export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
   intersection.observe(host);
   const lost = (e) => {
     e.preventDefault();
+    controls.enabled = false;
     cancelAnimationFrame(frame);
     canvas.hidden = true;
     onLost();
@@ -491,6 +544,12 @@ export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
       wakeUntil = performance.now() + 400;
       if (preference.matches) render(performance.now());
     },
+    topView() {
+      setView(0.08);
+    },
+    resetView() {
+      controls.reset();
+    },
     setVariant(value, opening = 0) {
       if (!FINISH[value] || host.dataset.variant === value) return;
       scene.remove(kit.group);
@@ -498,7 +557,6 @@ export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
       kit = createKit(value, brand);
       scene.add(kit.group);
       current = target = THREE.MathUtils.clamp(opening, 0, 1);
-      frameBounds = framing();
       kit.pose(current);
       host.dataset.variant = value;
       wakeUntil = performance.now() + 400;
@@ -510,6 +568,9 @@ export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
       resizeObserver.disconnect();
       intersection.disconnect();
       canvas.removeEventListener("webglcontextlost", lost);
+      host.removeEventListener("keydown", keyboard);
+      controls.removeEventListener("change", viewChanged);
+      controls.dispose();
       kit.dispose();
       groundGeo.dispose();
       groundMat.dispose();

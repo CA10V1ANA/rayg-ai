@@ -72,6 +72,8 @@ export default function CaseViewer({ variant, name, brand = "RAYG" }) {
         className="case-canvas"
         id="case-canvas"
         role="img"
+        tabIndex={disabled ? -1 : 0}
+        aria-describedby="case-view-hint"
         aria-label={`Caixa conceitual do ${brand} ${name}, ${opening === 0 ? "fechada" : opening === 100 ? "aberta" : `com abertura de ${opening}%`}`}
       >
         {!ready && !unavailable && (
@@ -93,6 +95,26 @@ export default function CaseViewer({ variant, name, brand = "RAYG" }) {
           </div>
         )}
       </div>
+      <div className="case-view-actions" aria-label="Ângulo da caixa">
+        <button
+          className="button"
+          disabled={disabled}
+          onClick={() => controller.current?.topView()}
+        >
+          Vista superior
+        </button>
+        <button
+          className="button"
+          disabled={disabled}
+          onClick={() => controller.current?.resetView()}
+        >
+          Restaurar vista
+        </button>
+      </div>
+      <p className="case-hint" id="case-view-hint">
+        Arraste a caixa para girar e olhar por cima. No teclado, use as setas e
+        Home. O deslizador abaixo controla a abertura.
+      </p>
       <div className="case-controls">
         <div className="case-range">
           <div>

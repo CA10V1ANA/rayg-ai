@@ -30,6 +30,29 @@
   display: block;
   width: 100%;
   height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+.case-canvas canvas:active {
+  cursor: grabbing;
+}
+.case-view-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0 24px;
+  margin: 0 0 12px;
+}
+.case-view-actions .button {
+  min-height: 44px;
+  font-size: 14px;
+  padding: 10px 16px;
+  margin-top: 0;
+}
+.case-view-actions + .case-hint {
+  font-size: 14px;
+  line-height: 1.6;
 }
 .case-loading {
   position: absolute;
