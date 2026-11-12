@@ -1,6 +1,10 @@
-import { AQUILA_LETTERS, AQUILA_SYMBOL_PATH } from "./aquila-brand.js";
+import {
+  AQUILA_LETTERS,
+  AQUILA_SYMBOL_PATH,
+  AQUILA_WINGS,
+} from "./aquila-brand.js";
 
-export function AquilaSymbol({ trace = false }) {
+export function AquilaSymbol({ trace = false, flying = false }) {
   return (
     <svg className="brandmark" viewBox="0 0 60 60" aria-hidden="true">
       <g
@@ -9,7 +13,22 @@ export function AquilaSymbol({ trace = false }) {
         strokeWidth="1.25"
         strokeLinecap="round"
       >
-        <path d={AQUILA_SYMBOL_PATH} pathLength={trace ? 1 : undefined} />
+        {flying ? (
+          <>
+            <g className="aquila-wing aquila-wing-left">
+              <path d={AQUILA_WINGS.left} pathLength={trace ? 1 : undefined} />
+            </g>
+            <g className="aquila-wing aquila-wing-right">
+              <path d={AQUILA_WINGS.right} pathLength={trace ? 1 : undefined} />
+            </g>
+            <path
+              d={AQUILA_WINGS.feathers}
+              pathLength={trace ? 1 : undefined}
+            />
+          </>
+        ) : (
+          <path d={AQUILA_SYMBOL_PATH} pathLength={trace ? 1 : undefined} />
+        )}
       </g>
       <circle cx="29" cy="21" r="1.7" fill="currentColor" />
     </svg>

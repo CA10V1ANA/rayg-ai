@@ -177,6 +177,8 @@ function Question({ question, answer, index }) {
 export default function Aquila() {
   useScrollReveal();
   const [introOpen, setIntroOpen] = useState(true);
+  const [introFlying, setIntroFlying] = useState(false);
+  const startIntroFlight = useCallback(() => setIntroFlying(true), []);
   const manualIntroExit = useRef(false);
   const finishIntro = useCallback((manual) => {
     manualIntroExit.current = manual;
@@ -343,13 +345,17 @@ export default function Aquila() {
   return (
     <div
       className="site-content"
-      data-intro={introOpen ? "pending" : "complete"}
+      data-intro={introOpen ? (introFlying ? "flight" : "pending") : "complete"}
       inert={introOpen}
       aria-hidden={introOpen ? true : undefined}
     >
       {introOpen &&
         createPortal(
-          <SiteIntro reducedMotion={reduceMotion} onComplete={finishIntro} />,
+          <SiteIntro
+            reducedMotion={reduceMotion}
+            onComplete={finishIntro}
+            onFlightStart={startIntroFlight}
+          />,
           document.body,
         )}
       <a className="skip-link" href="#conteudo">

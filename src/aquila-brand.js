@@ -1,6 +1,11 @@
 // Shared vector artwork for DOM signatures and 3D packaging textures.
 export const AQUILA_SYMBOL_PATH =
   "M4 52Q24 40 29 5Q34 36 56 52M14 44Q30 22 46 44M22 49Q30 36 38 49M29 5L33 12";
+export const AQUILA_WINGS = {
+  left: "M4 52Q24 40 29 5",
+  right: "M29 5Q34 36 56 52",
+  feathers: "M14 44Q30 22 46 44M22 49Q30 36 38 49M29 5L33 12",
+};
 export const AQUILA_LETTERS = {
   q: "M31 8C25 1 7 2 4 16C0 33 16 40 27 33C37 26 38 14 31 8Z",
   qTail: "M21 26Q29 39 42 38",
