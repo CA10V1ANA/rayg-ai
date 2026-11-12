@@ -1,0 +1,135 @@
+.site-intro {
+  --brand-progress: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--rose);
+  background: #141415;
+  opacity: 1;
+  transition: opacity 350ms var(--ease-smooth-out);
+}
+.site-intro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, #e6a8a80b, transparent 55%);
+}
+body:has(.site-intro) {
+  overflow: hidden;
+}
+.intro-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.intro-signature {
+  position: relative;
+  text-align: center;
+  padding: 24px;
+}
+.intro-wordmark {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: center;
+}
+.intro-wordmark > .brandmark {
+  width: clamp(60px, 10vw, 88px);
+  height: clamp(60px, 10vw, 88px);
+  color: var(--rose);
+}
+.intro-wordmark .wordmark {
+  display: flex;
+  align-items: baseline;
+  font-size: clamp(25px, 4.5vw, 40px);
+  color: var(--ink);
+  animation: intro-lettering 700ms var(--ease-smooth-out) 220ms both;
+}
+.intro-wordmark .brandmark path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: intro-trace 1100ms var(--ease-smooth-out) 80ms forwards;
+}
+.intro-wordmark .brandmark circle {
+  animation: intro-lettering 500ms var(--ease-smooth-out) 300ms both;
+}
+.intro-signature > p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  animation: intro-lettering 500ms var(--ease-smooth-out) 460ms both;
+}
+.site-intro .intro-skip {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: auto;
+  min-height: 44px;
+  gap: 12px;
+  padding: 10px 16px;
+  margin: 0;
+  font-size: 14px;
+}
+.site-intro.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+.site-intro.is-skipped {
+  transition-duration: var(--duration-quick);
+}
+.site-content[data-intro="pending"] .enter-line,
+.site-content[data-intro="pending"] .hero-aside {
+  animation-play-state: paused;
+}
+@keyframes intro-trace {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes intro-lettering {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+@media (max-width: 360px) {
+  .intro-wordmark {
+    gap: 12px;
+  }
+  .intro-wordmark .wordmark {
+    font-size: 24px;
+  }
+  .site-intro .intro-skip {
+    top: 16px;
+    right: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-intro,
+  .intro-wordmark .wordmark,
+  .intro-wordmark .brandmark path,
+  .intro-wordmark .brandmark circle,
+  .intro-signature > p {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+    stroke-dashoffset: 0;
+  }
+  .site-intro.is-leaving {
+    opacity: 0;
+  }
+}

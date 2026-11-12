@@ -1,8 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
 import AquilaModelFlow from "./AquilaModelFlow.jsx";
 import useScrollReveal from "./useScrollReveal.js";
 import HeroEyewear from "./HeroEyewear.jsx";
 import { AquilaSymbol, AquilaLettering } from "./AquilaBrand.jsx";
+import SiteIntro from "./SiteIntro.jsx";
 
 const models = [
   {
@@ -168,6 +176,18 @@ function Question({ question, answer, index }) {
 
 export default function Aquila() {
   useScrollReveal();
+  const [introOpen, setIntroOpen] = useState(true);
+  const manualIntroExit = useRef(false);
+  const finishIntro = useCallback((manual) => {
+    manualIntroExit.current = manual;
+    setIntroOpen(false);
+  }, []);
+  useLayoutEffect(() => {
+    if (!introOpen && manualIntroExit.current) {
+      manualIntroExit.current = false;
+      document.getElementById("conteudo")?.focus({ preventScroll: true });
+    }
+  }, [introOpen]);
   const [menu, setMenu] = useState(false);
   const [focus, setFocus] = useState(25);
   const [selected, setSelected] = useState(models[0]);
@@ -194,14 +214,20 @@ export default function Aquila() {
     return () => preference.removeEventListener("change", update);
   }, []);
   useEffect(() => {
-    if (reduceMotion || flowOpen || collectionHovered || collectionFocused)
+    if (
+      introOpen ||
+      reduceMotion ||
+      flowOpen ||
+      collectionHovered ||
+      collectionFocused
+    )
       return;
     const timer = setInterval(() => {
       if (!document.hidden)
         setActiveModel((previous) => (previous + 1) % models.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [reduceMotion, flowOpen, collectionHovered, collectionFocused]);
+  }, [introOpen, reduceMotion, flowOpen, collectionHovered, collectionFocused]);
 
   useEffect(() => {
     const sections = [...document.querySelectorAll("main > section, .closing")];
@@ -315,7 +341,17 @@ export default function Aquila() {
   };
 
   return (
-    <>
+    <div
+      className="site-content"
+      data-intro={introOpen ? "pending" : "complete"}
+      inert={introOpen}
+      aria-hidden={introOpen ? true : undefined}
+    >
+      {introOpen &&
+        createPortal(
+          <SiteIntro reducedMotion={reduceMotion} onComplete={finishIntro} />,
+          document.body,
+        )}
       <a className="skip-link" href="#conteudo">
         Pular para o conteúdo
       </a>
@@ -376,7 +412,8 @@ export default function Aquila() {
               <div className="lens-outline lens-left" aria-hidden="true" />
               <div className="lens-outline lens-right" aria-hidden="true" />
               <HeroEyewear
-                paused={productPaused}
+                active={!introOpen}
+                paused={productPaused || introOpen}
                 reducedMotion={reduceMotion}
               />
               <button
@@ -662,6 +699,6 @@ export default function Aquila() {
           />
         )}
       </dialog>
-    </>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function HeroEyewear({ paused, reducedMotion }) {
+export default function HeroEyewear({ paused, reducedMotion, active = true }) {
   const host = useRef(null);
   const controller = useRef(null);
   const [ready, setReady] = useState(false);
@@ -10,7 +10,7 @@ export default function HeroEyewear({ paused, reducedMotion }) {
     let studio;
     import("./hero-eyewear-studio.js")
       .then(({ createHeroEyewearStudio }) => {
-        if (canceled) return;
+        if (canceled || !active) return;
         try {
           studio = createHeroEyewearStudio(host.current, () => {
             setReady(false);
@@ -30,7 +30,7 @@ export default function HeroEyewear({ paused, reducedMotion }) {
       controller.current = null;
       studio?.dispose();
     };
-  }, []);
+  }, [active]);
   useEffect(() => {
     controller.current?.setPaused(paused || reducedMotion);
   }, [paused, reducedMotion, ready]);
