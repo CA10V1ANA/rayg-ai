@@ -3,6 +3,7 @@ audit-output/
 test-results/
 .taste-skill/
 dist/
+entregas/
 .DS_Store
 Thumbs.db
 *.local

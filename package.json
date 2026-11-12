@@ -10,6 +10,8 @@
     "test:aquila-flow": "node tests/aquila-flow.mjs",
     "test:aquila-motion": "node tests/aquila-motion.mjs",
     "test:aquila-3d": "node tests/aquila-3d.mjs",
+    "test:aquila-intro": "node tests/aquila-intro.mjs",
+    "export:html": "node scripts/export-html.mjs",
     "test:navbar": "node tests/navbar.mjs",
     "test:boxes": "node tests/boxes.mjs",
     "audit": "node scripts/visual_audit.mjs http://localhost:5173 audit-output",
