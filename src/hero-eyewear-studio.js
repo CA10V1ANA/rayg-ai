@@ -19,6 +19,20 @@ export function createHeroEyewearStudio(host, onLost) {
   camera.position.set(0, 1.6, 12);
   camera.lookAt(0, 0, 0);
   const room = new RoomEnvironment();
+  // A photography softbox in the reflection environment adds a broad window
+  // reflection to the dark lenses, like the original reference image.
+  const softbox = new THREE.Mesh(
+    new THREE.PlaneGeometry(3.4, 5.5),
+    new THREE.MeshPhysicalMaterial({
+      color: 0x111111,
+      emissive: 0xf6e7e1,
+      emissiveIntensity: 2.8,
+      roughness: 1,
+    }),
+  );
+  softbox.position.set(-3.5, 2.5, 8);
+  softbox.lookAt(0, 0, 0);
+  room.add(softbox);
   const pmrem = new THREE.PMREMGenerator(renderer);
   const env = pmrem.fromScene(room, 0.04);
   scene.environment = env.texture;

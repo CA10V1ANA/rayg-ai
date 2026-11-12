@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { createAquilaEyewear } from "./aquila-eyewear.js";
 
 // Semantic dimensions in scene units. The object is conceptual, not a manufacturing model.
 const CONFIG = {
@@ -26,6 +27,7 @@ function roundedShape(w, h, r) {
   return s;
 }
 export function createEyewear({ brand = "RAYG" } = {}) {
+  if (brand === "AQUILA") return createAquilaEyewear();
   const aquila = brand === "AQUILA";
   const group = new THREE.Group();
   group.name = `${brand} conceptual eyewear`;

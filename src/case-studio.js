@@ -429,7 +429,15 @@ export function createCaseStudio(host, variant, onLost, brand = "RAYG") {
   function fitCamera() {
     const w = host.clientWidth,
       h = host.clientHeight;
-    const frameBounds = new THREE.Box3().setFromObject(kit.group);
+    const frameBounds = new THREE.Box3();
+    kit.group.updateWorldMatrix(true, true);
+    kit.group.traverseVisible((object) => {
+      if (!object.isMesh) return;
+      if (!object.geometry.boundingBox) object.geometry.computeBoundingBox();
+      frameBounds.union(
+        object.geometry.boundingBox.clone().applyMatrix4(object.matrixWorld),
+      );
+    });
     if (!w || !h) return;
     camera.updateMatrixWorld();
     const projected = new THREE.Box3();
