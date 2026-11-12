@@ -14,7 +14,7 @@
   position: absolute;
   inset: 0;
   background: #141415;
-  transition: opacity 650ms var(--ease-smooth-out);
+  transition: opacity 450ms var(--ease-smooth-out);
 }
 .intro-veil::after {
   content: "";
@@ -24,16 +24,6 @@
 }
 body:has(.site-intro) {
   overflow: hidden;
-}
-.intro-particles {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  transition:
-    opacity 400ms var(--ease-smooth-out),
-    transform 650ms var(--ease-smooth-out);
 }
 .intro-signature {
   position: absolute;
@@ -54,10 +44,16 @@ body:has(.site-intro) {
   color: var(--rose);
   overflow: visible;
   transform: translateX(0);
-  transition: transform 650ms var(--ease-smooth-out);
+  transition: transform 750ms var(--ease-smooth-out);
 }
-.site-intro[data-phase="drawing"] .intro-logo > .brandmark {
-  transform: translateX(var(--intro-symbol-shift, 80px)) scale(1.2);
+.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="ascending"]) .intro-logo > .brandmark {
+  transform: translateX(var(--intro-symbol-shift, 80px));
+}
+.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="ascending"]) .intro-brand-type {
+  transform: translate(calc(-1 * (var(--intro-symbol-size, 48px) + var(--intro-gap, 12px)) / 2), calc(var(--intro-symbol-size, 48px) / 2 + 40px));
+}
+.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="ascending"]) .byline {
+  opacity: 0;
 }
 .intro-logo .wordmark {
   display: flex;
@@ -93,7 +89,7 @@ body:has(.site-intro) {
   animation: intro-dot 350ms ease-in-out 450ms both;
 }
 .intro-brand-type {
-  transition: opacity 300ms var(--ease-smooth-out);
+  transition: opacity 300ms var(--ease-smooth-out), transform 750ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .site-intro[data-phase="drawing"] .intro-brand-type {
   opacity: 0;
@@ -119,48 +115,8 @@ body:has(.site-intro) {
 .intro-logo .brand-last-a {
   animation-delay: 240ms !important;
 }
-.site-intro:is([data-phase="gather"], [data-phase="flight"]) .brand-letter-q {
-  transform: translate(-10px, 0) rotate(-6deg) scale(0.94);
-}
-.site-intro:is([data-phase="gather"], [data-phase="flight"]) .brand-letter-u {
-  transform: translate(-25px, 5px) rotate(-10deg) scale(0.94);
-}
-.site-intro:is([data-phase="gather"], [data-phase="flight"]) .brand-letter-i {
-  transform: translate(-38px, 10px) rotate(-16deg) scale(0.94);
-}
-.site-intro:is([data-phase="gather"], [data-phase="flight"]) .brand-letter-l {
-  transform: translate(-48px, 14px) rotate(-18deg) scale(0.92);
-}
-.site-intro:is([data-phase="gather"], [data-phase="flight"]) .brand-last-a {
-  transform: translate(-56px, 16px) rotate(-22deg) scale(0.86);
-}
-.site-intro:is([data-phase="gather"], [data-phase="flight"]) .byline {
-  opacity: 0;
-}
-.intro-logo .aquila-wing {
-  transform-box: view-box;
-  transform-origin: 29px 5px;
-}
-.site-intro:is([data-phase="gather"], [data-phase="flight"]) .aquila-wing-left {
-  animation: aquila-wing-left 440ms ease-in-out infinite;
-}
-.site-intro:is([data-phase="gather"], [data-phase="flight"])
-  .aquila-wing-right {
-  animation: aquila-wing-right 440ms ease-in-out infinite;
-}
-.site-intro:is([data-phase="landing"], [data-phase="landed"])
-  .intro-brand-type {
-  opacity: var(--land-letter-opacity, 1);
-}
-.site-intro:is([data-phase="landing"], [data-phase="landed"]) .byline {
-  opacity: var(--land-byline-opacity, 1);
-}
 .site-intro[data-revealed="true"] .intro-veil {
   opacity: 0;
-}
-.site-intro[data-revealed="true"] .intro-particles {
-  opacity: 0;
-  transform: scale(1.15);
 }
 .site-intro .intro-skip {
   position: absolute;
@@ -214,24 +170,6 @@ body:has(.site-intro) {
     filter: blur(0);
   }
 }
-@keyframes aquila-wing-left {
-  0%,
-  100% {
-    transform: rotate(0);
-  }
-  45% {
-    transform: rotate(38deg);
-  }
-}
-@keyframes aquila-wing-right {
-  0%,
-  100% {
-    transform: rotate(0);
-  }
-  45% {
-    transform: rotate(-38deg);
-  }
-}
 @media (max-width: 360px) {
   .site-intro .intro-skip {
     top: 16px;
@@ -251,3 +189,6 @@ body:has(.site-intro) {
     opacity: 1;
   }
 }
+
+.site-content[data-intro="pending"] { visibility: hidden; }
+body:has(.site-intro[data-revealed="true"]) .site-content { visibility: visible; }

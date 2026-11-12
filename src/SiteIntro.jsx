@@ -6,20 +6,16 @@ import {
   useState,
 } from "react";
 import { AquilaSymbol, AquilaLettering } from "./AquilaBrand.jsx";
-import SpaceBackground from "./components/ui/SpaceBackground.jsx";
 import "./site-intro.css";
 
-const FLIGHT_MS = 1400;
-const smooth = (t) => t * t * (3 - 2 * t);
-const bezier = (t, a, b, c) =>
-  3 * (1 - t) ** 2 * t * a + 3 * (1 - t) * t * t * b + t ** 3 * c;
-const transform = (x, y, scale, rotation = 0) =>
-  `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) scale(${scale}) rotate(${rotation}deg)`;
+const UP_MS = 750;
+const LEFT_MS = 850;
+const transform = (x, y, scale) =>
+  `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) scale(${scale})`;
 
 export default function SiteIntro({
   reducedMotion,
   onComplete,
-  onFlightStart,
 }) {
   const [phase, setPhase] = useState("drawing");
   const [revealed, setRevealed] = useState(false);
@@ -32,11 +28,9 @@ export default function SiteIntro({
     manualRequest = useRef(false),
     flying = useRef(false);
   const preference = useRef(reducedMotion),
-    complete = useRef(onComplete),
-    reveal = useRef(onFlightStart);
+    complete = useRef(onComplete);
   preference.current = reducedMotion;
   complete.current = onComplete;
-  reveal.current = onFlightStart;
   const later = useCallback((callback, delay) => {
     const id = setTimeout(() => {
       timers.current.delete(id);
@@ -117,15 +111,12 @@ export default function SiteIntro({
     const initialScale = parseFloat(
       root.current.style.getPropertyValue("--intro-scale"),
     );
-    const bounds = node.getBoundingClientRect(),
-      markBounds = symbol.getBoundingClientRect(),
-      destination = target.getBoundingClientRect();
-    const localX =
-      (markBounds.x + markBounds.width / 2 - bounds.x - bounds.width / 2) /
-      initialScale;
-    const localY =
-      (markBounds.y + markBounds.height / 2 - bounds.y - bounds.height / 2) /
-      initialScale;
+    const destination = target.getBoundingClientRect();
+    const bounds = node.getBoundingClientRect();
+    const markBounds = symbol.getBoundingClientRect();
+    const shift = parseFloat(root.current.style.getPropertyValue("--intro-symbol-shift"));
+    const localX = (markBounds.x + markBounds.width / 2 - bounds.x - bounds.width / 2) / initialScale - shift;
+    const localY = (markBounds.y + markBounds.height / 2 - bounds.y - bounds.height / 2) / initialScale;
     const finalScale =
       destination.width / parseFloat(getComputedStyle(symbol).width);
     const dx =
@@ -150,27 +141,34 @@ export default function SiteIntro({
     root.current.dataset.targetX = destination.x.toFixed(2);
     root.current.dataset.targetY = destination.y.toFixed(2);
     flying.current = true;
-    setPhase("flight");
-    setRevealed(true);
-    reveal.current?.();
-    const frames = Array.from({ length: 25 }, (_, i) => {
-      const t = i / 24;
-      return {
-        offset: t,
-        transform: transform(
-          bezier(t, dx * 0.16, dx * 0.72, dx),
-          bezier(t, dy * 0.4 - 90, dy - 40, dy),
-          initialScale + (finalScale - initialScale) * smooth(t),
-          -18 * Math.sin(Math.PI * t),
-        ),
-      };
-    });
-    const flight = node.animate(frames, {
-      duration: FLIGHT_MS,
-      easing: "cubic-bezier(0.25, 0.65, 0.3, 1)",
-      fill: "forwards",
-    });
-    animations.current.push(flight);
+    setPhase("ascending");
+    // First move vertically, keeping the symbol and stacked lettering centered.
+    const upward = node.animate([
+      { transform: transform(0, 0, initialScale) },
+      { transform: transform(0, dy, finalScale) },
+    ], { duration: UP_MS, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" });
+    animations.current.push(upward);
+    upward.finished.then(() => {
+      if (finishing.current) return;
+      // The second leg is strictly horizontal. Lettering docks alongside the symbol.
+      setPhase("left");
+      const sideways = node.animate([
+        { transform: transform(0, dy, finalScale) },
+        { transform: transform(dx, dy, finalScale) },
+      ], { duration: LEFT_MS, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" });
+      animations.current.push(sideways);
+      sideways.finished.then(() => {
+        if (finishing.current) return;
+        setPhase("landed");
+        setRevealed(true);
+        later(() => {
+          if (!finishing.current) {
+            finishing.current = true;
+            complete.current(false);
+          }
+        }, 450);
+      }).catch(() => {});
+    }).catch(() => {});
     for (const [part, color] of [
       [
         node.querySelector(".wordmark"),
@@ -181,24 +179,11 @@ export default function SiteIntro({
       animations.current.push(
         part.animate([{ color: getComputedStyle(part).color }, { color }], {
           duration: 400,
-          delay: FLIGHT_MS - 400,
+          delay: UP_MS + LEFT_MS - 300,
           fill: "forwards",
         }),
       );
     }
-    later(() => setPhase("landing"), FLIGHT_MS * 0.66);
-    flight.finished
-      .then(() => {
-        if (finishing.current) return;
-        setPhase("landed");
-        later(() => {
-          if (!finishing.current) {
-            finishing.current = true;
-            complete.current(false);
-          }
-        }, 120);
-      })
-      .catch(() => {});
   }, [configure, finish, later]);
   useLayoutEffect(() => {
     finishing.current = false;
@@ -209,8 +194,7 @@ export default function SiteIntro({
     if (preference.current) later(() => finish(), 0);
     else {
       later(() => setPhase("letters"), 1000);
-      later(() => setPhase("gather"), 1950);
-      later(startFlight, 2250);
+      later(startFlight, 2050);
       later(() => finish(), 5500); // Never leave the page blocked if animation support fails.
     }
     const keyboard = (event) => {
@@ -249,13 +233,9 @@ export default function SiteIntro({
       aria-label="Abertura AQUILA"
     >
       <div className="intro-veil" aria-hidden="true" />
-      <SpaceBackground
-        reducedMotion={reducedMotion || revealed}
-        particleColor="#e6a8a8"
-      />
       <div ref={signature} className="intro-signature" aria-hidden="true">
         <div className="intro-logo brand">
-          <AquilaSymbol trace flying />
+          <AquilaSymbol trace />
           <span className="brand-type intro-brand-type">
             <AquilaLettering />
             <span className="byline">por Rayane Serrão</span>
