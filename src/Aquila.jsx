@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import AquilaModelFlow from "./AquilaModelFlow.jsx";
 import useScrollReveal from "./useScrollReveal.js";
+import HeroEyewear from "./HeroEyewear.jsx";
 
-const art = "/assets/aquila/eyewear-concept.webp";
 const models = [
   {
     name: "Essencial",
@@ -412,12 +412,9 @@ export default function Aquila() {
             <div className="hero-art" data-motion-paused={productPaused}>
               <div className="lens-outline lens-left" aria-hidden="true" />
               <div className="lens-outline lens-right" aria-hidden="true" />
-              <img
-                src={art}
-                width="1500"
-                height="844"
-                alt="Imagem conceitual de óculos pretos com detalhes rosé e lentes transparentes"
-                fetchPriority="high"
+              <HeroEyewear
+                paused={productPaused}
+                reducedMotion={reduceMotion}
               />
               <button
                 className="hero-motion-toggle button"

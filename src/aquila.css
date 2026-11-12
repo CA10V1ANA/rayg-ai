@@ -27,7 +27,7 @@
   --modal-close-dur: var(--duration-quick);
   --focus-duration: 500ms;
   --hero-product-duration: 800ms;
-  --hero-orbit-duration: 8s;
+  --hero-orbit-duration: 20s;
   --nav-theme-duration: var(--duration-very-slow);
 }
 * {
@@ -446,6 +446,31 @@ h1 {
 }
 .hero-art[data-motion-paused="true"] img {
   animation-play-state: paused;
+}
+.hero-product {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.hero-art .hero-product img {
+  animation: none;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.hero-product.is-ready img {
+  opacity: 0;
+}
+.hero-product-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-product-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .hero-motion-toggle {
   position: absolute;

@@ -25,20 +25,21 @@ function roundedShape(w, h, r) {
   s.quadraticCurveTo(x, y, x + r, y);
   return s;
 }
-export function createEyewear() {
+export function createEyewear({ brand = "RAYG" } = {}) {
+  const aquila = brand === "AQUILA";
   const group = new THREE.Group();
-  group.name = "RAYG AI conceptual eyewear";
+  group.name = `${brand} conceptual eyewear`;
   const frameMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x111821,
+    color: aquila ? 0x211b1e : 0x111821,
     metalness: 0.52,
     roughness: 0.27,
     clearcoat: 0.65,
   });
   const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xb3dada,
+    color: aquila ? 0x33252c : 0xb3dada,
     metalness: 0.05,
     roughness: 0.09,
-    transmission: 0.8,
+    transmission: aquila ? 0.12 : 0.8,
     ior: 1.48,
     thickness: 0.12,
     transparent: true,
@@ -46,13 +47,13 @@ export function createEyewear() {
     side: THREE.DoubleSide,
   });
   const ledMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x087f8c,
-    emissive: 0x087f8c,
-    emissiveIntensity: 2,
+    color: aquila ? 0xc38b8f : 0x087f8c,
+    emissive: aquila ? 0x301c23 : 0x087f8c,
+    emissiveIntensity: aquila ? 0.3 : 2,
     roughness: 0.2,
   });
   const metalMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x62788d,
+    color: aquila ? 0xc78f87 : 0x62788d,
     metalness: 0.9,
     roughness: 0.25,
   });
@@ -133,7 +134,7 @@ export function createEyewear() {
       assembly,
     );
     lens.position.z = 0.04;
-    if (side === 1) {
+    if (side === 1 && !aquila) {
       for (let i = 0; i < 3; i++) {
         const layer = mesh(
           new THREE.ShapeGeometry(
