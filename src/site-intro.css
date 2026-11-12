@@ -46,13 +46,13 @@ body:has(.site-intro) {
   transform: translateX(0);
   transition: transform 750ms var(--ease-smooth-out);
 }
-.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="ascending"]) .intro-logo > .brandmark {
+.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="body"], [data-phase="ascending"], [data-phase="left"]) .intro-logo > .brandmark {
   transform: translateX(var(--intro-symbol-shift, 80px));
 }
-.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="ascending"]) .intro-brand-type {
+.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="body"], [data-phase="ascending"], [data-phase="left"]) .intro-brand-type {
   transform: translate(calc(-1 * (var(--intro-symbol-size, 48px) + var(--intro-gap, 12px)) / 2), calc(var(--intro-symbol-size, 48px) / 2 + 40px));
 }
-.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="ascending"]) .byline {
+.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="body"], [data-phase="ascending"], [data-phase="left"]) .byline {
   opacity: 0;
 }
 .intro-logo .wordmark {
@@ -94,11 +94,14 @@ body:has(.site-intro) {
 .site-intro[data-phase="drawing"] .intro-brand-type {
   opacity: 0;
 }
+.site-intro[data-phase="drawing"] :is(.intro-brand-type, .brandmark) {
+  transition: none;
+}
 .intro-logo .brand-letter,
 .intro-logo .brand-last-a {
   transform-box: fill-box;
   transform-origin: center;
-  transition: transform 350ms var(--ease-smooth-out);
+  transition: transform 650ms var(--ease-smooth-out);
 }
 .site-intro[data-phase="letters"] :is(.brand-letter, .brand-last-a) {
   animation: intro-letter-arrive 500ms var(--ease-smooth-out) both;
@@ -114,6 +117,9 @@ body:has(.site-intro) {
 }
 .intro-logo .brand-last-a {
   animation-delay: 240ms !important;
+}
+.site-intro:is([data-phase="body"], [data-phase="ascending"], [data-phase="left"]) :is(.brand-letter, .brand-last-a) {
+  transform: translate(var(--body-x), var(--body-y)) rotate(var(--body-rotation)) scale(var(--body-scale));
 }
 .site-intro[data-revealed="true"] .intro-veil {
   opacity: 0;
