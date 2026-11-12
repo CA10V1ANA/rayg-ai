@@ -172,7 +172,9 @@ export default function AquilaModelFlow({
     <div className="aquila-flow" ref={flowRoot}>
       <header className="flow-header">
         <div>
-          <p className="eyebrow">Coleção AQUILA</p>
+          <p className="eyebrow">
+            Coleção AQUILA{model.recommended ? " · Recomendado" : ""}
+          </p>
           <h2 id="model-title">AQUILA {model.name}</h2>
         </div>
         <div className="flow-price">

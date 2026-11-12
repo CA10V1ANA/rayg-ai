@@ -15,6 +15,7 @@ const models = [
     name: "Signature",
     tier: "B",
     price: 400,
+    recommended: true,
     line: "Presença em cada detalhe.",
     description: "Uma direção que destaca elegância e presença cotidiana.",
   },
@@ -565,6 +566,11 @@ export default function Aquila() {
                   >
                     <span className="model-index">0{i + 1}</span>
                     <div>
+                      {model.recommended && (
+                        <span className="model-recommendation">
+                          Recomendado
+                        </span>
+                      )}
                       <h3>{model.name}</h3>
                       <p>{model.line}</p>
                       <p className="model-price">
