@@ -34,7 +34,10 @@ try {
         if (phase === "ascending") {
           const mark = node.querySelector(".brandmark").getBoundingClientRect();
           const letters = node.querySelector(".wordmark").getBoundingClientRect();
-          window.introReview.stacked = letters.top >= mark.bottom;
+          const body = [...node.querySelectorAll(".brand-letter, .brand-last-a")].map(letter => letter.getBoundingClientRect());
+          window.introReview.bodyCenters = body.map(box => Math.abs(box.x + box.width / 2 - (mark.x + mark.width / 2)));
+          window.introReview.bodyOrder = body.map(box => box.y + box.height / 2);
+          window.introReview.stacked = body[0].top >= mark.bottom - 10;
           window.introReview.centered = Math.abs(mark.x + mark.width / 2 - innerWidth / 2) < 1;
           window.introReview.siteHidden = getComputedStyle(document.querySelector(".site-content")).visibility;
           window.introReview.titlePaused = getComputedStyle(document.querySelector(".enter-line")).animationPlayState;
@@ -96,11 +99,15 @@ try {
     assert.deepEqual(choreography.phases, [
       "drawing",
       "letters",
+      "body",
       "ascending",
       "left",
+      "docking",
       "landed",
     ]);
     assert.equal(choreography.stacked, true, "QUILA sits below the completed symbol");
+    assert.ok(choreography.bodyCenters.every(delta => delta < 2), "Letters share the eagle body axis");
+    assert.ok(choreography.bodyOrder.every((y, i, list) => i === 0 || y > list[i - 1]), "Letters taper into the tail");
     assert.equal(choreography.centered, true, "Symbol remains centered before ascent");
     assert.equal(choreography.siteHidden, "hidden");
     assert.equal(choreography.titlePaused, "paused");
