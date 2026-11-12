@@ -462,6 +462,9 @@ h1 {
 .hero-product.is-ready img {
   opacity: 0;
 }
+.hero-product.is-failed .hero-product-canvas {
+  display: none;
+}
 .hero-product-canvas {
   position: absolute;
   inset: 0;
@@ -471,6 +474,14 @@ h1 {
   display: block;
   width: 100%;
   height: 100%;
+}
+.hero-product-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 14px;
 }
 .hero-motion-toggle {
   position: absolute;
