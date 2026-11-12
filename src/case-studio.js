@@ -3,6 +3,7 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { createEyewear } from "./eyewear.js";
 import { casePose } from "./case-kinematics.js";
+import { drawAquilaWordmark } from "./aquila-brand.js";
 
 const SIZE = { width: 7, depth: 4.6, wall: 0.16, height: 1.25, lid: 0.24 };
 const FINISH = {
@@ -126,23 +127,7 @@ function createKit(variant, brand = "RAYG") {
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = ink;
     if (aquila) {
-      ctx.save();
-      ctx.translate(12, 24);
-      ctx.scale(130 / 60, 130 / 60);
-      ctx.strokeStyle = ink;
-      ctx.lineWidth = 1.8;
-      ctx.lineCap = "round";
-      ctx.stroke(
-        new Path2D(
-          "M4 52Q24 40 29 5Q34 36 56 52M14 44Q30 22 46 44M22 49Q30 36 38 49M29 5L33 12",
-        ),
-      );
-      ctx.beginPath();
-      ctx.arc(29, 21, 1.7, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-      ctx.font = "88px Georgia, serif";
-      ctx.fillText("QUILA", 148, 122);
+      drawAquilaWordmark(ctx, ink, canvas.width, canvas.height);
     } else {
       ctx.font = 'italic 700 104px "Space Grotesk", Arial';
       ctx.fillText("RAYG", 12, 125);
@@ -285,7 +270,7 @@ function createKit(variant, brand = "RAYG") {
   const lidShell = roundedSolid(7.13, 4.73, SIZE.lid, shell, hinge);
   lidShell.position.set(0, 0.05, half);
   box(6.7, 0.07, 4.3, 0, 0.015, half, lining, hinge);
-  const innerLogo = logo(config.ink, 2.5, hinge);
+  const innerLogo = logo(aquila ? "#f1ebe5" : config.ink, 2.5, hinge);
   innerLogo.rotation.x = Math.PI / 2;
   innerLogo.position.set(0, -0.028, half + 0.16);
   const outerLogo = logo(

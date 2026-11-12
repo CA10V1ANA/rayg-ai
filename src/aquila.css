@@ -220,7 +220,7 @@ input {
   opacity: clamp(0, calc(1 - var(--brand-progress) * 1.6), 1);
   transform: translateX(calc(var(--brand-progress) * -8px));
 }
-.scroll-brand .wordmark svg {
+.aquila-lettering svg {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.35;

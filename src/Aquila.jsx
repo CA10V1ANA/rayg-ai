@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import AquilaModelFlow from "./AquilaModelFlow.jsx";
 import useScrollReveal from "./useScrollReveal.js";
 import HeroEyewear from "./HeroEyewear.jsx";
+import { AquilaSymbol, AquilaLettering } from "./AquilaBrand.jsx";
 
 const models = [
   {
@@ -66,7 +67,7 @@ function Brand({ symbolOnly = false }) {
       />
       {!symbolOnly && (
         <span className="brand-type">
-          <span className="wordmark">AQUILA</span>
+          <AquilaLettering />
           <span className="byline">por Rayane Serrão</span>
         </span>
       )}
@@ -123,48 +124,9 @@ function HeaderBrand() {
       href="#inicio"
       aria-label="AQUILA início"
     >
-      <svg className="brandmark" viewBox="0 0 60 60" aria-hidden="true">
-        <g
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.25"
-          strokeLinecap="round"
-        >
-          <path d="M4 52Q24 40 29 5Q34 36 56 52M14 44Q30 22 46 44M22 49Q30 36 38 49M29 5L33 12" />
-        </g>
-        <circle cx="29" cy="21" r="1.7" fill="currentColor" />
-      </svg>
+      <AquilaSymbol />
       <span className="brand-type" aria-hidden="true">
-        <span className="wordmark">
-          <svg className="brand-tail" viewBox="0 0 146 42" aria-hidden="true">
-            <g className="brand-letter brand-letter-q">
-              <path d="M31 8C25 1 7 2 4 16C0 33 16 40 27 33C37 26 38 14 31 8Z" />
-              <path className="brand-q-tail" d="M21 26Q29 39 42 38" />
-            </g>
-            <path
-              className="brand-letter brand-letter-u"
-              d="M52 5V25Q52 36 64 36Q76 36 76 25V5"
-            />
-            <path className="brand-letter brand-letter-i" d="M94 5V36" />
-            <path className="brand-letter brand-letter-l" d="M113 5V36H141" />
-          </svg>
-          <span className="brand-terminal">
-            <svg
-              className="brand-last-a"
-              viewBox="0 0 34 42"
-              aria-hidden="true"
-            >
-              <path d="M2 36L17 5L32 36M8 25H26" />
-            </svg>
-            <svg
-              className="brand-diagonal"
-              viewBox="0 0 24 30"
-              aria-hidden="true"
-            >
-              <path d="M6 4L19 26" />
-            </svg>
-          </span>
-        </span>
+        <AquilaLettering />
         <span className="byline">por Rayane Serrão</span>
       </span>
     </a>

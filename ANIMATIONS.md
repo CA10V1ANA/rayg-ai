@@ -14,6 +14,8 @@ Os tokens ficam em `src/aquila.css`; `src/motion-tokens.js` lê os mesmos valore
 
 ## Navbar e assinatura
 
+Navbar e embalagens usam o mesmo desenho vetorial, definido em `src/aquila-brand.js`. `AquilaBrand.jsx` apresenta os traços no navegador, enquanto as texturas das caixas, estojos e tecidos usam os mesmos caminhos no canvas, sem substituir as letras por uma fonte.
+
 A troca de tema da cápsula usa 500 ms para fundo, borda, texto e símbolo. O item da seção atual ganha um sublinhado animado. A assinatura combina o símbolo original com letras vetoriais de traço fino; o nome recolhe gradualmente e o símbolo aumenta 16%. O percurso começa após 48 px e se estende por 70% da altura do hero, com mínimo de 420 px. A resposta acompanha a rolagem com suavização temporal de 110 ms, nos dois sentidos. Movimento reduzido mantém a assinatura inteira e elimina as transições.
 
 ## Produto e caixas 3D
