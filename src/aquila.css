@@ -40,6 +40,8 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font:
     16px/1.65 Arial,
     sans-serif;
@@ -391,6 +393,10 @@ h2,
 h3 {
   font-family: Georgia, serif;
   font-weight: 400;
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
 }
 h1 {
   font-size: clamp(64px, 7.1vw, 104px);
@@ -703,6 +709,8 @@ input[type="range"] {
 }
 .story {
   background: #f1ebe5;
+  min-height: auto;
+  padding-block: 72px;
 }
 .story-grid {
   display: grid;
@@ -725,7 +733,7 @@ input[type="range"] {
   margin-top: 32px;
 }
 .brand-panel {
-  min-height: 440px;
+  min-height: 340px;
   display: grid;
   place-items: center;
   position: relative;
@@ -734,18 +742,18 @@ input[type="range"] {
 .brand-panel::before {
   content: "";
   position: absolute;
-  width: min(90%, 380px);
+  width: min(85%, 300px);
   aspect-ratio: 1;
   border: 1px solid #804b5833;
   border-radius: 50%;
 }
 .brand-panel .brandmark {
-  width: 200px;
-  height: 200px;
+  width: 168px;
+  height: 168px;
 }
 .brand-panel > span {
   position: absolute;
-  bottom: 32px;
+  bottom: 16px;
   text-align: center;
   font-size: 13px;
   color: #804b58;
@@ -1040,29 +1048,55 @@ dialog .button {
     font-size: 16px;
   }
   .hero {
-    height: calc(100svh - 80px);
-    min-height: 720px;
+    height: auto;
+    min-height: calc(100svh - 80px);
+  }
+  .hero-inner {
+    height: auto;
+    min-height: inherit;
+    gap: 16px;
   }
   .hero-top {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    padding-top: 32px;
+    display: contents;
+  }
+  .hero-top > div:first-child {
+    order: 0;
+    padding-top: 24px;
   }
   h1 {
     font-size: clamp(48px, 8.5vw, 64px);
   }
   .hero-aside {
+    order: 2;
     padding: 0;
   }
   .hero-aside p {
     max-width: 48ch;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
   .hero-art {
-    min-height: 180px;
+    order: 1;
+    flex: 0 0 auto;
+    height: clamp(260px, 72vw, 360px);
+    min-height: 0;
+    padding-bottom: 48px;
+    width: calc(100% + 32px);
+    margin-inline: -16px;
+  }
+  .hero-art img {
+    width: 100%;
+    max-width: none;
+  }
+  .hero-art .hero-motion-toggle {
+    width: auto;
+    right: 16px;
+    bottom: 0;
+    padding: 8px 12px;
+    font-size: 14px;
   }
   .hero-bottom {
-    font-size: 13px;
+    order: 3;
+    font-size: 14px;
     min-height: 72px;
     gap: 12px;
   }
@@ -1105,7 +1139,38 @@ dialog .button {
     font-size: 36px;
   }
   .brand-panel {
-    min-height: 350px;
+    min-height: 240px;
+  }
+  .brand-panel::before {
+    width: min(75%, 220px);
+  }
+  .brand-panel .brandmark {
+    width: 128px;
+    height: 128px;
+  }
+  .story {
+    padding-block: 48px;
+  }
+  .story-grid {
+    gap: 24px;
+  }
+  .story h2 {
+    margin-bottom: 24px;
+  }
+  .story .signature {
+    margin-top: 24px;
+    margin-bottom: 0;
+  }
+  .eyebrow,
+  .range-labels,
+  .disclaimer,
+  .scene-footer,
+  .model-index,
+  .models-note,
+  .brand-panel > span,
+  .footer-row {
+    font-size: 14px;
+    line-height: 1.6;
   }
   .closing {
     padding-top: 64px;
@@ -1158,10 +1223,7 @@ dialog .button {
     gap: 8px;
   }
   h1 {
-    font-size: 43px;
-  }
-  .hero {
-    min-height: 760px;
+    font-size: 38px;
   }
   .model-row {
     grid-template-columns: 16px 1fr 48px;
