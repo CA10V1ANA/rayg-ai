@@ -38,9 +38,6 @@
   font-size: 13px;
   margin-bottom: 4px;
 }
-.flow-stage {
-  animation: flow-enter 250ms var(--ease-smooth-out) both;
-}
 .flow-stage h3 {
   margin-bottom: 24px;
 }
@@ -191,16 +188,6 @@
   font-size: 13px;
   padding-inline: 16px;
 }
-@keyframes flow-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
 @media (max-width: 760px) {
   .model-dialog {
     padding: 48px 24px 24px;
@@ -244,5 +231,475 @@
 @media (prefers-reduced-motion: reduce) {
   .flow-stage {
     animation: none;
+  }
+}
+/* Checkout: shared AQUILA palette, spacing and transitions.dev motion scale. */
+.model-dialog {
+  width: min(1080px, calc(100% - 48px));
+}
+.flow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding-right: 16px;
+}
+.flow-header h2 {
+  margin: 8px 0 0;
+}
+.flow-header .eyebrow {
+  margin: 0;
+}
+.flow-price {
+  display: grid;
+  gap: 4px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.flow-price strong {
+  font-size: 28px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--rose);
+}
+.flow-price span {
+  font-size: 13px;
+  color: var(--muted);
+}
+.flow-stage {
+  animation: none;
+}
+.flow-stage-stack,
+.flow-method-stack {
+  position: relative;
+  isolation: isolate;
+}
+.flow-stage[inert],
+.flow-method[inert] {
+  pointer-events: none;
+}
+.flow-stage h3:focus:not(:focus-visible) {
+  outline: none;
+}
+.flow-steps li {
+  transition:
+    color var(--duration-fast),
+    border-color var(--duration-fast);
+}
+.flow-steps li[data-done="true"] {
+  color: var(--ink);
+  border-color: #e6a8a880;
+}
+.flow-form {
+  max-width: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.flow-wide {
+  grid-column: 1 / -1;
+}
+.flow-form label {
+  min-width: 0;
+  font-size: 14px;
+  color: var(--ink);
+}
+.flow-form input,
+.flow-form select {
+  font: inherit;
+  font-size: 16px;
+  min-height: 48px;
+  width: 100%;
+  border: 1px solid #e6a8a860;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #141415;
+  color: var(--ink);
+  transition:
+    border-color var(--duration-quick),
+    background var(--duration-quick);
+}
+.flow-form input::placeholder {
+  color: #aaa09b;
+  opacity: 1;
+}
+.flow-form input:focus-visible,
+.flow-form select:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 3px;
+}
+.flow-form input[aria-invalid="true"] {
+  border-color: #ffaba8;
+}
+.field-error {
+  color: #ffbcb9;
+  font-size: 13px;
+}
+.flow-form input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.flow-checkout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 40px;
+  align-items: start;
+}
+.flow-payment-main {
+  min-width: 0;
+}
+.flow-payments {
+  display: block;
+  margin: 0 0 24px;
+  min-width: 0;
+}
+.flow-payments legend {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+.flow-payment-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.flow-payments label {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  border-radius: 8px;
+  padding: 14px 10px;
+  font-size: 14px;
+}
+.flow-payments label:has(:checked) {
+  background: transparent;
+}
+.flow-payments input {
+  width: 16px;
+  height: 16px;
+  margin: 3px 0 0;
+  flex-shrink: 0;
+}
+.flow-payments small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.payment-indicator {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #e6a8a818;
+  border-radius: inherit;
+}
+.flow-method h4,
+.flow-order h4 {
+  font-size: 18px;
+  margin: 0 0 16px;
+  font-weight: 500;
+}
+.flow-payer {
+  margin: 0;
+  padding: 0;
+}
+.flow-payer > div {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 16px;
+  font-size: 14px;
+  padding: 6px 0;
+}
+.flow-payer dt {
+  color: var(--muted);
+}
+.flow-payer dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.flow-edit {
+  background: transparent;
+  border: 0;
+  color: var(--rose);
+  padding: 10px 0;
+  min-height: 44px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.flow-instructions {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.flow-instructions p {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.flow-card-fields,
+.flow-address {
+  margin-top: 24px;
+}
+.flow-order {
+  background: #171517;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.flow-order .eyebrow {
+  margin: 0;
+  font-size: 12px;
+}
+.flow-order img {
+  width: 100%;
+  height: 110px;
+  object-fit: contain;
+  margin: 12px 0 20px;
+}
+.flow-order h4 {
+  margin-bottom: 4px;
+}
+.flow-order > p {
+  margin: 0;
+}
+.flow-order .flow-specs {
+  font-size: 14px;
+  margin: 16px 0;
+}
+.flow-order .flow-specs > div {
+  padding: 12px 0;
+  gap: 12px;
+}
+.flow-order .flow-specs dd {
+  max-width: none;
+  white-space: nowrap;
+}
+.flow-total {
+  font-weight: 600;
+}
+.flow-order .flow-total dt,
+.flow-order .flow-total dd {
+  color: var(--ink);
+}
+.flow-order > .flow-note + .flow-note {
+  margin-top: 12px;
+}
+.flow-availability {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 16px 0 0;
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.flow-availability p {
+  font-size: 13px;
+  margin: 0;
+}
+.flow-availability strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+.flow-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rose);
+  flex-shrink: 0;
+}
+.flow-actions .button {
+  margin-top: 0;
+}
+.flow-actions .button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.flow-reviewed {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 24px;
+  border: 1px solid #e6a8a850;
+  border-radius: 8px;
+  padding: 20px;
+  background: #e6a8a80a;
+}
+.flow-reviewed p {
+  font-size: 14px;
+  margin: 4px 0 0;
+}
+.flow-reviewed strong {
+  font-weight: 500;
+}
+.flow-check {
+  flex: 0 0 40px;
+  animation: checkout-check var(--duration-very-slow) var(--ease-smooth-out)
+    both;
+}
+.flow-check svg {
+  display: block;
+  width: 40px;
+  stroke: var(--rose);
+  stroke-width: 1.5;
+}
+.flow-check circle {
+  stroke-opacity: 0.4;
+}
+.flow-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: checkout-draw var(--duration-very-slow) var(--ease-smooth-out)
+    var(--duration-micro) forwards;
+}
+.model-row .model-price {
+  color: #643c46;
+  font-size: 14px;
+  margin-top: 6px;
+}
+.model-dialog::backdrop {
+  background: #0000;
+  transition: background var(--modal-open-dur) var(--ease-smooth-out);
+}
+.model-dialog.is-open::backdrop {
+  background: #000b;
+}
+@starting-style {
+  .model-dialog.is-open::backdrop {
+    background: #0000;
+  }
+}
+.model-dialog.is-closing::backdrop {
+  background: #0000;
+  transition-duration: var(--modal-close-dur);
+}
+@keyframes checkout-check {
+  from {
+    opacity: 0;
+    transform: translateY(var(--distance-base)) rotate(-12deg);
+    filter: blur(var(--blur-large));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+@keyframes checkout-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (max-width: 900px) {
+  .flow-checkout-grid {
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 24px;
+  }
+  .flow-payment-options {
+    grid-template-columns: 1fr;
+  }
+  .flow-payments label {
+    align-items: center;
+  }
+  .flow-payments small {
+    display: inline;
+    margin-left: 8px;
+  }
+}
+@media (max-width: 760px) {
+  .model-dialog {
+    width: calc(100% - 24px);
+    max-height: calc(100svh - 24px);
+    padding: 48px 20px 24px;
+  }
+  .flow-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 0;
+  }
+  .flow-header h2 {
+    font-size: 32px;
+  }
+  .flow-price {
+    text-align: left;
+  }
+  .flow-price strong {
+    font-size: 24px;
+  }
+  .flow-steps {
+    gap: 6px;
+  }
+  .flow-steps li {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .flow-form {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .flow-checkout-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .flow-order {
+    order: -1;
+    padding: 20px;
+  }
+  .flow-order img {
+    display: none;
+  }
+  .flow-order .eyebrow {
+    margin-bottom: 12px;
+  }
+  .flow-order .flow-specs {
+    margin-bottom: 12px;
+  }
+  .flow-actions {
+    gap: 12px;
+  }
+  .flow-actions .flow-edit {
+    text-align: center;
+    width: 100%;
+  }
+  .flow-steps li > span,
+  .aquila-flow .flow-note,
+  .flow-price span,
+  .flow-payments small,
+  .field-error,
+  .flow-availability p,
+  .flow-order .eyebrow,
+  .aquila-flow #model-note,
+  .aquila-flow .case-viewer-top,
+  .aquila-flow .case-viewer-top small,
+  .aquila-flow .case-viewer-top span:last-child,
+  .aquila-flow .case-hint,
+  .aquila-flow .case-range > div {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .flow-specs dd,
+  .flow-payer dd {
+    overflow-wrap: anywhere;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-check,
+  .flow-check path {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+    stroke-dashoffset: 0;
+  }
+  .flow-steps li,
+  .flow-form input,
+  .flow-form select,
+  .model-dialog::backdrop {
+    transition: none;
   }
 }

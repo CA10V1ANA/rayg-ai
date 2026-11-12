@@ -5,16 +5,22 @@ const art = "/assets/aquila/eyewear-concept.webp";
 const models = [
   {
     name: "Essencial",
+    tier: "A",
+    price: 250,
     line: "Uma expressão de simplicidade.",
     description: "Uma direção que valoriza simplicidade e proximidade.",
   },
   {
     name: "Signature",
+    tier: "B",
+    price: 400,
     line: "Presença em cada detalhe.",
     description: "Uma direção que destaca elegância e presença cotidiana.",
   },
   {
     name: "Prestige",
+    tier: "C",
+    price: 750,
     line: "Um olhar de personalidade.",
     description:
       "Uma direção de apresentação com personalidade e atenção aos detalhes.",
@@ -277,6 +283,8 @@ export default function Aquila() {
     setFlowOpen(true);
     setModalState("");
     dialog.current.showModal();
+    // Commit the resting scale/backdrop before the entrance starts.
+    void dialog.current.offsetWidth;
     requestAnimationFrame(() => setModalState("is-open"));
   };
   const closeModel = () => {
@@ -518,6 +526,13 @@ export default function Aquila() {
                     <div>
                       <h3>{model.name}</h3>
                       <p>{model.line}</p>
+                      <p className="model-price">
+                        Classe {model.tier} ·{" "}
+                        {model.price.toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </p>
                     </div>
                     <button
                       className="round model-button"
@@ -530,8 +545,8 @@ export default function Aquila() {
                 ))}
                 <p className="models-note">
                   Imagem ilustrativa compartilhada entre as propostas.
-                  Características, diferenças e preços aguardam confirmação da
-                  criadora.
+                  Características e diferenças técnicas aguardam confirmação da
+                  criadora. Cartão em até 10x sem juros.
                 </p>
               </div>
             </div>
@@ -631,7 +646,13 @@ export default function Aquila() {
         >
           ×
         </button>
-        {flowOpen && <AquilaModelFlow model={selected} onClose={closeModel} />}
+        {flowOpen && (
+          <AquilaModelFlow
+            model={selected}
+            onClose={closeModel}
+            reducedMotion={reduceMotion}
+          />
+        )}
       </dialog>
     </>
   );
