@@ -2,9 +2,9 @@
 
 ## Abertura do site
 
-Na abertura de cada carregamento, o símbolo inspirado em águia é desenhado sozinho no centro, com partículas rosé em órbita. As letras QUILA entram depois, agrupam-se como corpo e cauda, e o símbolo abre as asas. O conjunto segue uma trajetória curva até a posição medida do símbolo na navbar; as letras se reorganizam durante o pouso. A marca da navbar permanece oculta até a passagem para evitar duplicação. A sequência dura aproximadamente 3,8 segundos. Pular abertura ou Escape permitem sair mais cedo. O conteúdo fica inerte durante a cena; ao pular, o foco retorna ao conteúdo. A preferência de movimento reduzido dispensa o voo. Redimensionar a tela durante o voo encerra a abertura com segurança. O efeito é adaptado do SpaceBackground fornecido, em `src/components/ui/SpaceBackground.jsx`, sem novas dependências, migração de stack ou imagens externas.
+Na abertura de cada carregamento, apenas o símbolo é desenhado no centro. As letras QUILA aparecem abaixo dele. Depois, o conjunto sobe em linha reta e segue para a esquerda, assumindo o formato da navbar. A posição final é medida no elemento real. O site fica oculto e suas animações pausadas até a chegada. A abertura dura aproximadamente 4,1 segundos. Pular abertura e Escape encerram a cena e devolvem o foco ao conteúdo. Movimento reduzido dispensa a cena. Redimensionar a tela durante o deslocamento encerra a abertura com segurança.
 
-Os títulos do hero entram quando o voo começa; o 3D inicia após o pouso. `npm run test:aquila-intro` verifica as fases, o alinhamento do pouso, encerramento automático, recarregamento, teclado, acessibilidade e movimento reduzido. `npm run export:html` gera `entregas/AQUILA-site-completo.html` com CSS, imagens e JavaScript incorporados, para abertura offline.
+Os títulos do hero e o 3D iniciam após a chegada da marca. `npm run test:aquila-intro` verifica as fases, o alinhamento do pouso, encerramento automático, recarregamento, teclado, acessibilidade e movimento reduzido. `npm run export:html` gera `entregas/AQUILA-site-completo.html` com CSS, imagens e JavaScript incorporados, para abertura offline.
 
 Aplicação atual: `src/main.jsx` carrega `Aquila.jsx`. A revisão cobre a página que está em uso, os modais e o menu. Os componentes da versão anterior em `App.jsx` não são carregados pela página atual.
 

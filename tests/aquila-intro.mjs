@@ -17,17 +17,27 @@ try {
     await page.evaluate(() => {
       const node = document.querySelector(".site-intro");
       window.introReview = { phases: [node.dataset.phase] };
+      window.introReview.samples = { ascending: [], left: [] };
+      const sample = () => {
+        const phase = node.dataset.phase;
+        if (window.introReview.samples[phase]) {
+          const matrix = new DOMMatrix(getComputedStyle(node.querySelector(".intro-signature")).transform);
+          window.introReview.samples[phase].push([matrix.e, matrix.f]);
+        }
+        if (node.isConnected) requestAnimationFrame(sample);
+      };
+      requestAnimationFrame(sample);
       const observer = new MutationObserver(() => {
         const phase = node.dataset.phase;
         if (!window.introReview.phases.includes(phase))
           window.introReview.phases.push(phase);
-        if (phase === "flight") {
-          window.introReview.wings = getComputedStyle(
-            node.querySelector(".aquila-wing-left"),
-          ).animationName;
-          window.introReview.navHidden = getComputedStyle(
-            document.querySelector(".scroll-brand"),
-          ).opacity;
+        if (phase === "ascending") {
+          const mark = node.querySelector(".brandmark").getBoundingClientRect();
+          const letters = node.querySelector(".wordmark").getBoundingClientRect();
+          window.introReview.stacked = letters.top >= mark.bottom;
+          window.introReview.centered = Math.abs(mark.x + mark.width / 2 - innerWidth / 2) < 1;
+          window.introReview.siteHidden = getComputedStyle(document.querySelector(".site-content")).visibility;
+          window.introReview.titlePaused = getComputedStyle(document.querySelector(".enter-line")).animationPlayState;
         }
         if (phase === "landed") {
           const a = node
@@ -86,17 +96,19 @@ try {
     assert.deepEqual(choreography.phases, [
       "drawing",
       "letters",
-      "gather",
-      "flight",
-      "landing",
+      "ascending",
+      "left",
       "landed",
     ]);
-    assert.equal(choreography.wings, "aquila-wing-left");
-    assert.equal(
-      choreography.navHidden,
-      "0",
-      "Only the flying logo is visible until handoff",
-    );
+    assert.equal(choreography.stacked, true, "QUILA sits below the completed symbol");
+    assert.equal(choreography.centered, true, "Symbol remains centered before ascent");
+    assert.equal(choreography.siteHidden, "hidden");
+    assert.equal(choreography.titlePaused, "paused");
+    const spread = (samples, axis) => Math.max(...samples.map(p => p[axis])) - Math.min(...samples.map(p => p[axis]));
+    assert.ok(choreography.samples.ascending.length > 2);
+    assert.ok(choreography.samples.left.length > 2);
+    assert.ok(spread(choreography.samples.ascending, 0) < 1, "Ascent has no horizontal movement");
+    assert.ok(spread(choreography.samples.left, 1) < 1, "Left leg has no vertical movement");
     assert.ok(
       choreography.landing.every((delta) => Math.abs(delta) <= 1),
       JSON.stringify(choreography.landing),
@@ -131,7 +143,7 @@ try {
       false,
     );
     console.log(
-      `${width}: desenho, letras, asas, voo, pouso preciso, teclado e acessibilidade aprovados`,
+      `${width}: desenho central, letras abaixo, subida reta, percurso à esquerda e chegada precisa, teclado e acessibilidade aprovados`,
     );
     await context.close();
   }
