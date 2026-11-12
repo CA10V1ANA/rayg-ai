@@ -28,6 +28,7 @@
   --focus-duration: 500ms;
   --hero-product-duration: 800ms;
   --hero-orbit-duration: 8s;
+  --nav-theme-duration: var(--duration-very-slow);
 }
 * {
   box-sizing: border-box;
@@ -135,12 +136,26 @@ input {
   color: var(--header-ink);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  transition:
+    background-color var(--nav-theme-duration) var(--ease-smooth-out),
+    border-color var(--nav-theme-duration) var(--ease-smooth-out),
+    color var(--nav-theme-duration) var(--ease-smooth-out),
+    box-shadow var(--nav-theme-duration) var(--ease-smooth-out);
+  box-shadow:
+    0 1px 0 #ffffff05 inset,
+    0 8px 30px #0000000a;
 }
 .site-header .byline {
   color: var(--header-muted);
+  transition: color var(--nav-theme-duration) var(--ease-smooth-out);
 }
 .site-header .button {
   border-color: var(--header-line);
+  transition:
+    color var(--nav-theme-duration) var(--ease-smooth-out),
+    border-color var(--nav-theme-duration) var(--ease-smooth-out),
+    background-color var(--duration-quick) var(--ease-smooth-out),
+    transform var(--duration-quick) var(--ease-smooth-out);
 }
 .site-header :where(a, button):focus-visible {
   outline-color: var(--header-accent);
@@ -183,6 +198,11 @@ input {
 }
 .scroll-brand .brandmark {
   flex-shrink: 0;
+  color: var(--header-accent);
+  transform: translateX(calc(var(--brand-progress) * 4px))
+    scale(calc(1 + var(--brand-progress) * 0.16));
+  transform-origin: left center;
+  transition: color var(--nav-theme-duration) var(--ease-smooth-out);
 }
 .scroll-brand .wordmark {
   white-space: nowrap;
@@ -190,22 +210,53 @@ input {
   align-items: baseline;
 }
 .brand-tail {
-  display: inline-block;
-  vertical-align: bottom;
-  max-width: calc((1 - var(--brand-progress)) * 6em);
+  display: block;
+  width: 4.85em;
+  height: 1.42em;
+  max-width: calc((1 - var(--brand-progress)) * 4.85em);
   overflow: hidden;
-  opacity: calc(1 - var(--brand-progress));
-  transform: translateX(calc(var(--brand-progress) * -4px));
+  opacity: clamp(0, calc(1 - var(--brand-progress) * 1.6), 1);
+  transform: translateX(calc(var(--brand-progress) * -8px));
+}
+.scroll-brand .wordmark svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.brand-letter {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.brand-letter-q {
+  opacity: clamp(0, calc(1 - var(--brand-progress) * 1.3), 1);
+}
+.brand-letter-u {
+  opacity: clamp(0, calc(1.15 - var(--brand-progress) * 1.7), 1);
+}
+.brand-letter-i {
+  opacity: clamp(0, calc(1.3 - var(--brand-progress) * 1.9), 1);
+}
+.brand-letter-l {
+  opacity: clamp(0, calc(1.45 - var(--brand-progress) * 2), 1);
+}
+.brand-q-tail {
+  stroke: var(--header-accent);
+  transition: stroke var(--nav-theme-duration) var(--ease-smooth-out);
 }
 .brand-terminal {
   display: inline-grid;
-  width: 0.9em;
+  width: calc((1 - var(--brand-progress)) * 1.12em);
+  overflow: hidden;
   flex-shrink: 0;
 }
 .brand-terminal > * {
   grid-area: 1 / 1;
 }
 .brand-last-a {
+  width: 1.12em;
+  height: 1.42em;
   opacity: calc(1 - var(--brand-progress));
 }
 .brand-diagonal {
@@ -223,7 +274,27 @@ input {
   overflow: hidden;
   white-space: nowrap;
   max-height: calc((1 - var(--brand-progress)) * 24px);
-  opacity: calc(1 - var(--brand-progress));
+  opacity: clamp(0, calc(1 - var(--brand-progress) * 2.4), 1);
+}
+.site-header .navigation a {
+  position: relative;
+  transition:
+    color var(--nav-theme-duration) var(--ease-smooth-out),
+    background-color var(--duration-quick) var(--ease-smooth-out);
+}
+.site-header .navigation a::after {
+  content: "";
+  position: absolute;
+  inset-inline: 16px;
+  bottom: 6px;
+  height: 1px;
+  background: var(--header-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-fast) var(--ease-smooth-out);
+}
+.site-header .navigation a[aria-current="location"]::after {
+  transform: scaleX(1);
 }
 .navigation {
   display: flex;
@@ -913,6 +984,10 @@ dialog .button {
   }
   .scroll-brand {
     max-width: 62%;
+    gap: 8px;
+  }
+  .scroll-brand .wordmark {
+    font-size: 23px;
   }
   .menu-toggle {
     display: inline-flex;
@@ -923,9 +998,6 @@ dialog .button {
     padding-block: 8px;
   }
   .navigation {
-    display: none;
-  }
-  .navigation.is-open {
     position: absolute;
     top: 80px;
     display: flex;
@@ -938,7 +1010,30 @@ dialog .button {
     border-radius: 24px;
     left: 24px;
     right: 24px;
-    animation: product-enter var(--duration-fast) var(--ease-smooth-out);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--distance-base)));
+    pointer-events: none;
+    transition:
+      background-color var(--nav-theme-duration) var(--ease-smooth-out),
+      border-color var(--nav-theme-duration) var(--ease-smooth-out),
+      color var(--nav-theme-duration) var(--ease-smooth-out),
+      opacity var(--duration-quick) var(--ease-smooth-out),
+      transform var(--duration-quick) var(--ease-smooth-out),
+      visibility 0s linear var(--duration-quick);
+  }
+  .navigation.is-open {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition:
+      background-color var(--nav-theme-duration) var(--ease-smooth-out),
+      border-color var(--nav-theme-duration) var(--ease-smooth-out),
+      color var(--nav-theme-duration) var(--ease-smooth-out),
+      opacity var(--duration-fast) var(--ease-smooth-out),
+      transform var(--duration-fast) var(--ease-smooth-out),
+      visibility 0s linear;
   }
   .navigation a {
     min-height: 48px;
@@ -1042,6 +1137,12 @@ dialog .button {
 @media (max-width: 360px) {
   .wordmark {
     font-size: 20px;
+  }
+  .scroll-brand .wordmark {
+    font-size: 18px;
+  }
+  .scroll-brand {
+    gap: 4px;
   }
   .byline {
     font-size: 11px;

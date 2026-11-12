@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import AquilaModelFlow from "./AquilaModelFlow.jsx";
+import useScrollReveal from "./useScrollReveal.js";
 
 const art = "/assets/aquila/eyewear-concept.webp";
 const models = [
@@ -78,22 +79,38 @@ function HeaderBrand() {
   useEffect(() => {
     const preference = matchMedia("(prefers-reduced-motion: reduce)");
     let frame = null;
-    const update = () => {
-      frame = null;
-      const progress = preference.matches
+    let progress = 0;
+    let lastTime = null;
+    const target = () => {
+      const hero = document.getElementById("inicio");
+      const distance = Math.max(420, (hero?.offsetHeight || innerHeight) * 0.7);
+      return preference.matches
         ? 0
-        : Math.min(1, Math.max(0, (window.scrollY - 24) / 216));
+        : Math.min(1, Math.max(0, (scrollY - 48) / distance));
+    };
+    const update = (time) => {
+      const desired = target();
+      const elapsed = lastTime === null ? 16 : Math.min(time - lastTime, 64);
+      lastTime = time;
+      progress += (desired - progress) * (1 - Math.exp(-elapsed / 110));
+      if (preference.matches || Math.abs(desired - progress) < 0.001)
+        progress = desired;
       brand.current?.style.setProperty("--brand-progress", String(progress));
+      frame = progress === desired ? null : requestAnimationFrame(update);
+      if (frame === null) lastTime = null;
     };
     const schedule = () => {
       if (frame === null) frame = requestAnimationFrame(update);
     };
-    update();
+    progress = target();
+    brand.current?.style.setProperty("--brand-progress", String(progress));
     window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
     preference.addEventListener("change", schedule);
     return () => {
       if (frame !== null) cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
       preference.removeEventListener("change", schedule);
     };
   }, []);
@@ -105,18 +122,39 @@ function HeaderBrand() {
       href="#inicio"
       aria-label="AQUILA início"
     >
-      <img
-        className="brandmark"
-        src="/assets/aquila/brandmark.svg"
-        alt=""
-        width="60"
-        height="60"
-      />
+      <svg className="brandmark" viewBox="0 0 60 60" aria-hidden="true">
+        <g
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+        >
+          <path d="M4 52Q24 40 29 5Q34 36 56 52M14 44Q30 22 46 44M22 49Q30 36 38 49M29 5L33 12" />
+        </g>
+        <circle cx="29" cy="21" r="1.7" fill="currentColor" />
+      </svg>
       <span className="brand-type" aria-hidden="true">
         <span className="wordmark">
-          <span className="brand-tail">QUIL</span>
+          <svg className="brand-tail" viewBox="0 0 146 42" aria-hidden="true">
+            <g className="brand-letter brand-letter-q">
+              <path d="M31 8C25 1 7 2 4 16C0 33 16 40 27 33C37 26 38 14 31 8Z" />
+              <path className="brand-q-tail" d="M21 26Q29 39 42 38" />
+            </g>
+            <path
+              className="brand-letter brand-letter-u"
+              d="M52 5V25Q52 36 64 36Q76 36 76 25V5"
+            />
+            <path className="brand-letter brand-letter-i" d="M94 5V36" />
+            <path className="brand-letter brand-letter-l" d="M113 5V36H141" />
+          </svg>
           <span className="brand-terminal">
-            <span className="brand-last-a">A</span>
+            <svg
+              className="brand-last-a"
+              viewBox="0 0 34 42"
+              aria-hidden="true"
+            >
+              <path d="M2 36L17 5L32 36M8 25H26" />
+            </svg>
             <svg
               className="brand-diagonal"
               viewBox="0 0 24 30"
@@ -166,6 +204,7 @@ function Question({ question, answer, index }) {
 }
 
 export default function Aquila() {
+  useScrollReveal();
   const [menu, setMenu] = useState(false);
   const [focus, setFocus] = useState(25);
   const [selected, setSelected] = useState(models[0]);
@@ -216,6 +255,11 @@ export default function Aquila() {
       header.current.dataset.tone = section?.matches(".paper, .closing")
         ? "light"
         : "dark";
+      header.current.querySelectorAll(".navigation a").forEach((link) => {
+        if (section?.id && link.hash === `#${section.id}`) {
+          link.setAttribute("aria-current", "location");
+        } else link.removeAttribute("aria-current");
+      });
     };
     const schedule = () => {
       if (frame === null) frame = requestAnimationFrame(update);
