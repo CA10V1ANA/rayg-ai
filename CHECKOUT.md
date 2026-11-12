@@ -1,6 +1,6 @@
 # Checkout AQUILA
 
-Preços: Essencial/classe A R$ 250; Signature/classe B R$ 400; Prestige/classe C R$ 750. Até 10x sem juros é a condição solicitada; deverá ser habilitada na conta do recebedor. Valores de parcelas que não dividem exatamente o total em centavos são aproximados. O provedor deverá informar a composição exata preservando o total.
+Preços: Essencial R$ 250 (classe C); Signature R$ 400 (classe B); Prestige R$ 750 (classe A). As classes são uma referência interna: a interface apresenta apenas os nomes dos modelos e seus valores, sem classificação socioeconômica explícita. Até 10x sem juros é a condição solicitada; deverá ser habilitada na conta do recebedor. Valores de parcelas que não dividem exatamente o total em centavos são aproximados. O provedor deverá informar a composição exata preservando o total.
 
 ## Estado atual
 

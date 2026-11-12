@@ -172,7 +172,7 @@ export default function AquilaModelFlow({
     <div className="aquila-flow" ref={flowRoot}>
       <header className="flow-header">
         <div>
-          <p className="eyebrow">AQUILA · Classe {model.tier}</p>
+          <p className="eyebrow">Coleção AQUILA</p>
           <h2 id="model-title">AQUILA {model.name}</h2>
         </div>
         <div className="flow-price">
@@ -221,9 +221,7 @@ export default function AquilaModelFlow({
                     <dl className="flow-specs">
                       <div>
                         <dt>Modelo</dt>
-                        <dd>
-                          {model.name} · Classe {model.tier}
-                        </dd>
+                        <dd>{model.name}</dd>
                       </div>
                       <div>
                         <dt>Valor</dt>
@@ -582,7 +580,6 @@ export default function AquilaModelFlow({
                     height="941"
                   />
                   <h4>AQUILA {model.name}</h4>
-                  <p>Classe {model.tier}</p>
                   <dl className="flow-specs">
                     <div>
                       <dt>Quantidade</dt>

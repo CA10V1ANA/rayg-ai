@@ -6,7 +6,7 @@ import HeroEyewear from "./HeroEyewear.jsx";
 const models = [
   {
     name: "Essencial",
-    tier: "A",
+    tier: "C",
     price: 250,
     line: "Uma expressão de simplicidade.",
     description: "Uma direção que valoriza simplicidade e proximidade.",
@@ -20,7 +20,7 @@ const models = [
   },
   {
     name: "Prestige",
-    tier: "C",
+    tier: "A",
     price: 750,
     line: "Um olhar de personalidade.",
     description:
@@ -568,7 +568,6 @@ export default function Aquila() {
                       <h3>{model.name}</h3>
                       <p>{model.line}</p>
                       <p className="model-price">
-                        Classe {model.tier} ·{" "}
                         {model.price.toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
