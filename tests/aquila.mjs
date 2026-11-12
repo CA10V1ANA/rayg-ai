@@ -120,7 +120,13 @@ try {
         .evaluate((el) => Number(getComputedStyle(el).opacity) > 0),
       "The diagonal appears only during the brand transition",
     );
-    await page.evaluate(() => scrollTo(0, 300));
+    await page.evaluate(() =>
+      scrollTo(
+        0,
+        Math.max(420, document.querySelector("#inicio").offsetHeight * 0.7) +
+          64,
+      ),
+    );
     await page.waitForFunction(
       () =>
         document
@@ -168,7 +174,10 @@ try {
         scrollTo(0, section.getBoundingClientRect().top + scrollY);
       }, id);
       await page.waitForFunction(
-        () => document.querySelector(".site-header").dataset.tone === "light",
+        () =>
+          document.querySelector(".site-header").dataset.tone === "light" &&
+          getComputedStyle(document.querySelector(".nav")).color ===
+            "rgb(41, 34, 37)",
       );
       assert.equal(
         await page.locator(".nav").evaluate((el) => getComputedStyle(el).color),
@@ -180,7 +189,10 @@ try {
     });
     await page.evaluate(() => scrollTo(0, 0));
     await page.waitForFunction(
-      () => document.querySelector(".site-header").dataset.tone === "dark",
+      () =>
+        document.querySelector(".site-header").dataset.tone === "dark" &&
+        getComputedStyle(document.querySelector(".nav")).color ===
+          "rgb(241, 235, 229)",
     );
     assert.equal(
       await page.evaluate(
@@ -276,7 +288,12 @@ try {
     reducedMotion: "reduce",
   });
   await page.goto(url, { waitUntil: "networkidle" });
-  await page.evaluate(() => scrollTo(0, 300));
+  await page.evaluate(() =>
+    scrollTo(
+      0,
+      Math.max(420, document.querySelector("#inicio").offsetHeight * 0.7) + 64,
+    ),
+  );
   await page.waitForTimeout(80);
   assert.equal(
     await page
