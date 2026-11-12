@@ -1,5 +1,11 @@
 # Animações AQUILA
 
+## Abertura do site
+
+Na abertura de cada carregamento, a assinatura AQUILA aparece com o símbolo sendo desenhado e partículas rosé se aproximando em órbita. A cena dura aproximadamente 2,65 segundos e sai automaticamente. Pular abertura ou Escape permitem sair mais cedo. O conteúdo fica inerte durante a cena; ao pular, o foco retorna ao conteúdo. A preferência de movimento reduzido dispensa a abertura animada. O efeito é adaptado do SpaceBackground fornecido, em `src/components/ui/SpaceBackground.jsx`, sem novas dependências, migração de stack ou imagens externas.
+
+O hero inicia suas animações e a rotação após a abertura. `npm run test:aquila-intro` verifica encerramento automático, recarregamento, teclado, acessibilidade e movimento reduzido. `npm run export:html` gera `entregas/AQUILA-site-completo.html` com CSS, imagens e JavaScript incorporados, para abertura offline.
+
 Aplicação atual: `src/main.jsx` carrega `Aquila.jsx`. A revisão cobre a página que está em uso, os modais e o menu. Os componentes da versão anterior em `App.jsx` não são carregados pela página atual.
 
 - Rolagem: entrada única com opacidade, deslocamento de 12 px e desfoque de 3 px; 500 ms, intervalo de 40 ms entre irmãos, limitado a 200 ms. Títulos, experiência de nitidez, coleção, origem, perguntas e rodapé têm gatilhos individuais de visibilidade.
