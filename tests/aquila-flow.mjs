@@ -19,6 +19,7 @@ try {
     });
     const page = await context.newPage();
     await page.goto(url, { waitUntil: "networkidle" });
+    await page.locator(".site-intro").waitFor({ state: "hidden" });
     const active = () => page.locator(".collection-preview p").innerText();
     const first = await active();
     await page.waitForTimeout(5200);
@@ -63,6 +64,7 @@ try {
       if (request.method() !== "GET") writes.push(request.url());
     });
     await page.goto(url, { waitUntil: "networkidle" });
+    await page.locator(".site-intro").waitFor({ state: "hidden" });
     for (const [name, price] of [
       ["Essencial", "250,00"],
       ["Signature", "400,00"],
@@ -217,6 +219,7 @@ try {
   });
   const page = await context.newPage();
   await page.goto(url, { waitUntil: "networkidle" });
+  await page.locator(".site-intro").waitFor({ state: "hidden" });
   const initial = await page.locator(".collection-preview p").innerText();
   await page.waitForTimeout(5200);
   assert.equal(

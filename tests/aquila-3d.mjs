@@ -40,6 +40,7 @@ try {
     const errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
+    await page.locator(".site-intro").waitFor({ state: "hidden" });
     const hero = page.locator(".hero-product-canvas");
     await page.locator(".hero-product.is-ready canvas").waitFor();
     const start = Number(await hero.getAttribute("data-angle"));
@@ -208,6 +209,7 @@ try {
   }
   const page = await browser.newPage();
   await page.goto(url, { waitUntil: "networkidle" });
+  await page.locator(".site-intro").waitFor({ state: "hidden" });
   await page.locator(".hero-product.is-ready canvas").waitFor();
   await page
     .locator(".hero-product-canvas canvas")

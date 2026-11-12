@@ -11,6 +11,7 @@ try {
     const errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
+    await page.locator(".site-intro").waitFor({ state: "hidden" });
     const title = page.locator("#origem h2");
     assert.equal(
       await title.evaluate((el) => getComputedStyle(el.parentElement).opacity),
