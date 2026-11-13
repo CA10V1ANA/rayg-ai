@@ -34,10 +34,9 @@ try {
         if (phase === "ascending") {
           const mark = node.querySelector(".brandmark").getBoundingClientRect();
           const letters = node.querySelector(".wordmark").getBoundingClientRect();
-          const body = [...node.querySelectorAll(".brand-letter, .brand-last-a")].map(letter => letter.getBoundingClientRect());
-          window.introReview.bodyCenters = body.map(box => Math.abs(box.x + box.width / 2 - (mark.x + mark.width / 2)));
-          window.introReview.bodyOrder = body.map(box => box.y + box.height / 2);
-          window.introReview.stacked = body[0].top >= mark.bottom - 10;
+          window.introReview.stacked = letters.top >= mark.bottom;
+          const glyphs = [...node.querySelectorAll(".brand-letter, .brand-last-a")].map(el => el.getBoundingClientRect());
+          window.introReview.horizontalLetters = glyphs.every((box, i) => i === 0 || box.x > glyphs[i - 1].x);
           window.introReview.centered = Math.abs(mark.x + mark.width / 2 - innerWidth / 2) < 1;
           window.introReview.siteHidden = getComputedStyle(document.querySelector(".site-content")).visibility;
           window.introReview.titlePaused = getComputedStyle(document.querySelector(".enter-line")).animationPlayState;
@@ -74,6 +73,8 @@ try {
       await page.locator(".site-content").evaluate((el) => el.inert),
       true,
     );
+    assert.equal(await page.locator(".intro-particles").count(), 1, "Particle ring restored");
+    assert.equal(await page.locator(".intro-particles").evaluate(el => el.width > 0 && el.height > 0), true);
     await page.keyboard.press("Tab");
     assert.match(
       await page.evaluate(() => document.activeElement.textContent),
@@ -84,7 +85,7 @@ try {
       path: `audit-output/aquila/${width}-site-intro.png`,
     });
     const axe = await new AxeBuilder({ page })
-      .include(".site-intro")
+      .include("body")
       .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
       .analyze();
     assert.deepEqual(
@@ -99,15 +100,13 @@ try {
     assert.deepEqual(choreography.phases, [
       "drawing",
       "letters",
-      "body",
       "ascending",
       "left",
       "docking",
       "landed",
     ]);
     assert.equal(choreography.stacked, true, "QUILA sits below the completed symbol");
-    assert.ok(choreography.bodyCenters.every(delta => delta < 2), "Letters share the eagle body axis");
-    assert.ok(choreography.bodyOrder.every((y, i, list) => i === 0 || y > list[i - 1]), "Letters taper into the tail");
+    assert.equal(choreography.horizontalLetters, true, "QUILA remains a horizontal name below the symbol");
     assert.equal(choreography.centered, true, "Symbol remains centered before ascent");
     assert.equal(choreography.siteHidden, "hidden");
     assert.equal(choreography.titlePaused, "paused");
