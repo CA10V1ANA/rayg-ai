@@ -25,6 +25,19 @@
 body:has(.site-intro) {
   overflow: hidden;
 }
+.intro-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 400ms var(--ease-smooth-out), transform 600ms var(--ease-smooth-out);
+}
+.site-intro:not([data-phase="drawing"]):not([data-phase="letters"]) .intro-particles {
+  opacity: 0;
+  transform: scale(1.08);
+}
 .intro-signature {
   position: absolute;
   left: 50%;
@@ -46,13 +59,13 @@ body:has(.site-intro) {
   transform: translateX(0);
   transition: transform 750ms var(--ease-smooth-out);
 }
-.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="body"], [data-phase="ascending"], [data-phase="left"]) .intro-logo > .brandmark {
+.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="ascending"], [data-phase="left"]) .intro-logo > .brandmark {
   transform: translateX(var(--intro-symbol-shift, 80px));
 }
-.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="body"], [data-phase="ascending"], [data-phase="left"]) .intro-brand-type {
+.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="ascending"], [data-phase="left"]) .intro-brand-type {
   transform: translate(calc(-1 * (var(--intro-symbol-size, 48px) + var(--intro-gap, 12px)) / 2), calc(var(--intro-symbol-size, 48px) / 2 + 40px));
 }
-.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="body"], [data-phase="ascending"], [data-phase="left"]) .byline {
+.site-intro:is([data-phase="drawing"], [data-phase="letters"], [data-phase="ascending"], [data-phase="left"]) .byline {
   opacity: 0;
 }
 .intro-logo .wordmark {
@@ -117,9 +130,6 @@ body:has(.site-intro) {
 }
 .intro-logo .brand-last-a {
   animation-delay: 240ms !important;
-}
-.site-intro:is([data-phase="body"], [data-phase="ascending"], [data-phase="left"]) :is(.brand-letter, .brand-last-a) {
-  transform: translate(var(--body-x), var(--body-y)) rotate(var(--body-rotation)) scale(var(--body-scale));
 }
 .site-intro[data-revealed="true"] .intro-veil {
   opacity: 0;

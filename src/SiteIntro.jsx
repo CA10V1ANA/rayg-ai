@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import { AquilaSymbol, AquilaLettering } from "./AquilaBrand.jsx";
+import SpaceBackground from "./components/ui/SpaceBackground.jsx";
 import "./site-intro.css";
 
 const UP_MS = 750;
@@ -89,30 +90,6 @@ export default function SiteIntro({
       "--intro-symbol-shift",
       `${(logo.offsetWidth - parseFloat(getComputedStyle(symbol).width)) / 2}px`,
     );
-    if (!root.current.dataset.bodyReady) {
-      const mark = symbol.getBoundingClientRect();
-      const center = logo.getBoundingClientRect();
-      // Each existing letter becomes part of the tapered body, rather than a caption.
-      const poses = [
-        [".brand-letter-q", 32, 0.52, 0],
-        [".brand-letter-u", 43, 0.48, 0],
-        [".brand-letter-i", 50, 0.3, 0],
-        [".brand-letter-l", 58, 0.34, -15],
-        [".brand-last-a", 66, 0.36, 180],
-      ];
-      for (const [selector, y, size, rotation] of poses) {
-        const letter = logo.querySelector(selector);
-        const box = letter.getBoundingClientRect();
-        const units = letter.tagName.toLowerCase() === "svg"
-          ? scale
-          : Math.hypot(letter.getScreenCTM().a, letter.getScreenCTM().b);
-        letter.style.setProperty("--body-x", `${(center.x + center.width / 2 - box.x - box.width / 2) / units}px`);
-        letter.style.setProperty("--body-y", `${(mark.y + mark.height / 2 + y * scale - box.y - box.height / 2) / units}px`);
-        letter.style.setProperty("--body-scale", size);
-        letter.style.setProperty("--body-rotation", `${rotation}deg`);
-      }
-      root.current.dataset.bodyReady = "true";
-    }
     return true;
   }, []);
   const startFlight = useCallback(() => {
@@ -219,8 +196,7 @@ export default function SiteIntro({
     if (preference.current) later(() => finish(), 0);
     else {
       later(() => setPhase("letters"), 1000);
-      later(() => setPhase("body"), 1750);
-      later(startFlight, 2500);
+      later(startFlight, 2050);
       later(() => finish(), 5500); // Never leave the page blocked if animation support fails.
     }
     const keyboard = (event) => {
@@ -259,6 +235,10 @@ export default function SiteIntro({
       aria-label="Abertura AQUILA"
     >
       <div className="intro-veil" aria-hidden="true" />
+      <SpaceBackground
+        reducedMotion={reducedMotion || !["drawing", "letters"].includes(phase)}
+        particleColor="#e6a8a8"
+      />
       <div ref={signature} className="intro-signature" aria-hidden="true">
         <div className="intro-logo brand">
           <AquilaSymbol trace />
